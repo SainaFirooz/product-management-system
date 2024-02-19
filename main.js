@@ -165,7 +165,7 @@ async function closeDBconnection() {
 
 
 (async () => {
-    await closeDBconnection();
+    // await closeDBconnection();
     await menu();
   })();
   
