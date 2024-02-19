@@ -133,7 +133,7 @@ async function shipOrders() {
 
 }
 
-// menu option 111
+// menu option 11
 async function addNewSupplier() {   
       
 }
@@ -165,7 +165,7 @@ async function closeDBconnection() {
 
 
 (async () => {
-    await closeDBconnection();
+
     await menu();
   })();
   
