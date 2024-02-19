@@ -6,8 +6,10 @@ import {
   SalesOrderModel,
   ProductModel,
 } from "./models.js";
+import { sampleOffers } from "./sampleData.js";
 
 let supplierModel_collection = SupplierModel.collection;
+let offerModel_collection = OfferModel.collection;
 await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
 const menu = async () => {
   try {
@@ -130,10 +132,44 @@ async function addNewProduct() {
 async function productsByCategory() {}
 
 // menu option 4
-async function productsBySupplier() {}
+async function productsBySupplier() {
+}
+
 
 // menu option 5
-async function viewAllOffers() {}
+async function viewAllOffers() {
+  try {
+    const { minPrice, maxPrice } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "minPrice",
+        message: "Enter minimum price",
+        validate: value => !isNaN(value) ? true : 'Please enter a number',
+      },
+      {
+        type: "input",
+        name: "maxPrice",
+        message: "Enter maximum price",
+        validate: value => !isNaN(value) ? true : 'Please enter a number',
+      },
+    ]);
+
+    const filteredOffers = sampleOffers.filter(offer => offer.price >= minPrice && offer.price <= maxPrice);
+
+    filteredOffers.forEach((offer, index) => {
+      console.log(`Offer ${index + 1}:`);
+      console.log(`Products: ${offer.products.join(', ')}`);
+      console.log(`Price: ${offer.price}`);
+      console.log(`Active: ${offer.active ? 'Yes' : 'No'}`);
+      console.log('------------------------');
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
 
 // menu option 6
 async function specificCategory() {}
@@ -166,8 +202,7 @@ async function sumOfAllProfits() {}
 
 // Exit
 async function closeDBconnection() {
-  await mongoose.connection.close();
-  process.exit();
+  
 }
 
 (async () => {
