@@ -37,10 +37,10 @@ const menu = async () => {
           await addNewProduct();
           break;
         case "View products by category":
-          await viewProductsByCategory();
+          await productsByCategory();
           break;
         case "View products by supplier":
-          await viewProductsBySupplier();
+          await productsBySupplier();
           break;
         case "View all offers within a price range":
           await viewAllOffers();
@@ -82,8 +82,84 @@ const menu = async () => {
   }
 };
 
+// menu option 1
+async function addNewCategory() {
+ 
+}
 
-// 1
+// menu option 2
+async function addNewProduct() {
+  
+}
+
+// menu option 3
+async function productsByCategory() {
+      
+}
+
+// menu option 4
+async function productsBySupplier() {
+  
+}
+
+// menu option 5
+async function viewAllOffers() {    
+      
+}
+
+
+// menu option 6
+async function specificCategory() {
+      
+}
+
+// menu option 7
+async function productsInStock() {
+      
+}
+
+// menu option 8
+async function orderForProducts() {
+      
+}
+
+// menu option 9
+async function orderForOffers() {
+        
+}
+
+// menu option 10
+async function shipOrders() {
+
+}
+
+// menu option 111
+async function addNewSupplier() {   
+      
+}
+
+
+// menu option 12
+async function viewSuppliers() {
+
+
+}
+// menu option 13
+async function viewAllSales() {
+      
+}
+
+// menu option 14
+async function sumOfAllProfits() {
+        
+}
+
+
+// Exit
+async function closeDBconnection() {
+    await mongoose.connection.close();
+    process.exit();
+}
 
 
 
