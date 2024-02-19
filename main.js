@@ -10,7 +10,21 @@ import { sampleOffers } from "./sampleData.js";
 
 let supplierModel_collection = SupplierModel.collection;
 let offerModel_collection = OfferModel.collection;
-await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
+
+
+
+// await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
+
+
+const connectToDB = async () => {
+  try {
+    await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.log("Error connecting to MongoDB", error);
+  }
+};
+
 const menu = async () => {
   try {
     while (true) {
@@ -84,7 +98,7 @@ const menu = async () => {
           break;
         case "Exit":
           await closeDBconnection();
-          break;
+          return;
       }
     }
   } catch (error) {
@@ -202,11 +216,16 @@ async function sumOfAllProfits() {}
 
 // Exit
 async function closeDBconnection() {
-  
+  try {
+    await mongoose.disconnect();
+    console.log("Leaving menu.", "Disconnected from MongoDB");
+  } catch (error) {
+    console.log("Error disconnecting from MongoDB", error);
+  }
 }
 
 (async () => {
-
+    await connectToDB();
     await menu();
   })();
   
