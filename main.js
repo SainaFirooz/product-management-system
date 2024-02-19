@@ -9,9 +9,6 @@ import {
 import { sampleOffers } from "./sampleData.js";
 
 let supplierModel_collection = SupplierModel.collection;
-let offerModel_collection = OfferModel.collection;
-
-
 
 // await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
 
@@ -168,7 +165,13 @@ async function viewAllOffers() {
       },
     ]);
 
-    const filteredOffers = sampleOffers.filter(offer => offer.price >= minPrice && offer.price <= maxPrice);
+    const filteredOffers = await OfferModel.aggregate([
+      {
+        $match: {
+          price: { $gte: Number(minPrice), $lte: Number(maxPrice) }
+        }
+      }
+    ]);
 
     filteredOffers.forEach((offer, index) => {
       console.log(`Offer ${index + 1}:`);
@@ -181,7 +184,6 @@ async function viewAllOffers() {
     console.log(error);
   }
 }
-
 
 
 
