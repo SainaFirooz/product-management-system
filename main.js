@@ -24,9 +24,9 @@ const menu = async () => {
             "View suppliers",
             "View all sales",
             "View sum of all profits",
-            "Exit"
-          ]
-        }
+            "Exit",
+          ],
+        },
       ]);
 
       switch (choice) {
@@ -83,90 +83,51 @@ const menu = async () => {
 };
 
 // menu option 1
-async function addNewCategory() {
- 
-}
+async function addNewCategory() {}
 
 // menu option 2
-async function addNewProduct() {
-  
-}
+async function addNewProduct() {}
 
 // menu option 3
-async function productsByCategory() {
-      
-}
+async function productsByCategory() {}
 
 // menu option 4
-async function productsBySupplier() {
-  
-}
+async function productsBySupplier() {}
 
 // menu option 5
-async function viewAllOffers() {    
-      
-}
-
+async function viewAllOffers() {}
 
 // menu option 6
-async function specificCategory() {
-      
-}
+async function specificCategory() {}
 
 // menu option 7
-async function productsInStock() {
-      
-}
+async function productsInStock() {}
 
 // menu option 8
-async function orderForProducts() {
-      
-}
+async function orderForProducts() {}
 
 // menu option 9
-async function orderForOffers() {
-        
-}
+async function orderForOffers() {}
 
 // menu option 10
-async function shipOrders() {
-
-}
+async function shipOrders() {}
 
 // menu option 111
-async function addNewSupplier() {   
-      
-}
-
+async function addNewSupplier() {}
 
 // menu option 12
-async function viewSuppliers() {
-
-
-}
+async function viewSuppliers() {}
 // menu option 13
-async function viewAllSales() {
-      
-}
+async function viewAllSales() {}
 
 // menu option 14
-async function sumOfAllProfits() {
-        
-}
-
+async function sumOfAllProfits() {}
 
 // Exit
 async function closeDBconnection() {
-    await mongoose.connection.close();
-    process.exit();
+  await mongoose.connection.close();
+  process.exit();
 }
-
-
-
-
 (async () => {
-    // await closeDBconnection();
-    await menu();
-  })();
-  
-
+  await menu();
+})();
