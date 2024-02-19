@@ -1,20 +1,12 @@
 import mongoose from "mongoose";
 
-const productSchema = mongoose.Schema({
-  name: { type: String },
-  category: { type: String },
-  price: { type: Number },
-  cost: { type: Number },
-  stock: { type: Number },
-});
-
-const offerSchema = mongoose.Schema({
+const OfferSchema = mongoose.Schema({
   products: { type: String },
   price: { type: Number },
   active: { type: Boolean },
 });
 
-const supplierSchema = mongoose.Schema({
+const SupplierSchema = mongoose.Schema({
   name: { type: String },
   contact: {
     name: { type: String },
@@ -22,7 +14,16 @@ const supplierSchema = mongoose.Schema({
   },
 });
 
-const salesOrdersSchema = mongoose.Schema({
+const ProductSchema = mongoose.Schema({
+  name: { type: String },
+  category: { type: String },
+  price: { type: Number },
+  cost: { type: Number },
+  stock: { type: Number },
+  supplier: SupplierSchema,
+});
+
+const SalesOrdersSchema = mongoose.Schema({
   order: {
     type: String,
     required: true,
@@ -41,9 +42,7 @@ const salesOrdersSchema = mongoose.Schema({
   },
 });
 
-const SalesOrder = mongoose.model("SalesOrder", salesOrdersSchema);
-
-export const productModel = mongoose.model("Product", productSchema);
-export const offerModel = mongoose.model("Offer", offerSchema);
-export const supplierModel = mongoose.model("Supplier", supplierSchema);
-export const salesOrderModel = mongoose.model("SalesOrder", salesOrdersSchema);
+export const ProductModel = mongoose.model("Product", ProductSchema);
+export const OfferModel = mongoose.model("Offer", OfferSchema);
+export const SupplierModel = mongoose.model("Supplier", SupplierSchema);
+export const SalesOrderModel = mongoose.model("SalesOrder", SalesOrdersSchema);

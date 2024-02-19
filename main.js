@@ -1,6 +1,14 @@
-import mongoose from "mongoose";
+import mongoose, { connect } from "mongoose";
 import inquirer from "inquirer";
+import {
+  SupplierModel,
+  OfferModel,
+  SalesOrderModel,
+  ProductModel,
+} from "./models.js";
 
+let supplierModel_collection = SupplierModel.collection;
+await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
 const menu = async () => {
   try {
     while (true) {
@@ -88,8 +96,7 @@ async function addNewCategory() {}
 // menu option 2
 async function addNewProduct() {
   try {
-    console.log("HEYO");
-    let allSuppliers = await supplierModel.aggregate([
+    let allSuppliers = await SupplierModel.aggregate([
       {
         $group: { _id: "$name" },
       },
@@ -99,14 +106,20 @@ async function addNewProduct() {
     let suppliersList = allSuppliers.map((supplier) => supplier._id);
 
     while (true) {
-      const { choice } = await inquirer.prompt([
+      const { supplier_choice } = await inquirer.prompt([
         {
           type: "list",
           name: "Suppliers list",
           message: "Choose Supplier",
-          choices: [...suppliersList],
+          choices: [...suppliersList, "New supplier", "Exit"],
         },
       ]);
+      if (supplier_choice === "New Supplier") {
+      } else if (supplier_choice === "Exit") {
+        break;
+      } else {
+        break;
+      }
     }
   } catch (error) {
     console.log(error);
