@@ -128,8 +128,6 @@ async function closeDBconnection() {
   await mongoose.connection.close();
   process.exit();
 }
-
 (async () => {
-  await closeDBconnection();
   await menu();
 })();

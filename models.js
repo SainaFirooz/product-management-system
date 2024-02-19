@@ -22,32 +22,7 @@ const supplierSchema = mongoose.Schema({
   },
 });
 
-//chatGPT förslag
-
-const salesOrderSchema = mongoose.Schema({
-  items: [
-    {
-      type: { type: String, enum: ["product", "offer"] }, // Either "product" or "offer"
-      item: { type: mongoose.Schema.Types.ObjectId, refPath: "items.type" }, // Reference to either Product or Offer
-      quantity: { type: Number },
-    },
-  ],
-  status: { type: String },
-  totalCost: { type: Number },
-  totalRevenue: { type: Number },
-  totalProfit: { type: Number },
-  profitTax: { type: Number },
-  profitPerOffer: [
-    {
-      offer: { type: mongoose.Schema.Types.ObjectId, ref: "Offer" },
-      profit: { type: Number },
-    },
-  ],
-  date: { type: Date },
-});
-
-//Sainas förslag
-const salesOrdersSchema = new mongoose.Schema({
+const salesOrdersSchema = mongoose.Schema({
   order: {
     type: String,
     required: true,
@@ -66,9 +41,9 @@ const salesOrdersSchema = new mongoose.Schema({
   },
 });
 
-const SalesOrder = mongoose.model("SalesOrder", salesOrderSchema);
+const SalesOrder = mongoose.model("SalesOrder", salesOrdersSchema);
 
 export const productModel = mongoose.model("Product", productSchema);
 export const offerModel = mongoose.model("Offer", offerSchema);
 export const supplierModel = mongoose.model("Supplier", supplierSchema);
-export const salesOrderModel = mongoose.model("SalesOrder", salesOrderSchema);
+export const salesOrderModel = mongoose.model("SalesOrder", salesOrdersSchema);
