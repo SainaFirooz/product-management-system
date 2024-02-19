@@ -86,7 +86,32 @@ const menu = async () => {
 async function addNewCategory() {}
 
 // menu option 2
-async function addNewProduct() {}
+async function addNewProduct() {
+  try {
+    console.log("HEYO");
+    let allSuppliers = await supplierModel.aggregate([
+      {
+        $group: { _id: "$name" },
+      },
+    ]);
+    console.log(allSuppliers);
+
+    let suppliersList = allSuppliers.map((supplier) => supplier._id);
+
+    while (true) {
+      const { choice } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "Suppliers list",
+          message: "Choose Supplier",
+          choices: [...suppliersList],
+        },
+      ]);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // menu option 3
 async function productsByCategory() {}
