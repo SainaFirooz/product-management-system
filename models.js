@@ -4,6 +4,7 @@ const OfferSchema = mongoose.Schema({
   products: { type: [String] },
   price: { type: Number },
   active: { type: Boolean },
+  category: { type: [String] },
 });
 
 const SupplierSchema = mongoose.Schema({
@@ -25,12 +26,11 @@ const ProductSchema = mongoose.Schema({
 
 const SalesOrdersSchema = mongoose.Schema({
   order: {
-    type: String,
+    type: [String],
     required: true,
   },
   offer: {
     type: String,
-    required: true,
   },
   quantity: {
     type: Number,
@@ -39,6 +39,9 @@ const SalesOrdersSchema = mongoose.Schema({
   status: {
     type: String,
     required: true,
+  },
+  additional_detail: {
+    type: String,
   },
 });
 
