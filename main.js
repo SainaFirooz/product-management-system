@@ -6,9 +6,22 @@ import {
   SalesOrderModel,
   ProductModel,
 } from "./models.js";
+import { sampleOffers } from "./sampleData.js";
 
 let supplierModel_collection = SupplierModel.collection;
-await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
+
+// await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
+
+
+const connectToDB = async () => {
+  try {
+    await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.log("Error connecting to MongoDB", error);
+  }
+};
+
 const menu = async () => {
   try {
     while (true) {
@@ -82,7 +95,7 @@ const menu = async () => {
           break;
         case "Exit":
           await closeDBconnection();
-          break;
+          return;
       }
     }
   } catch (error) {
@@ -139,10 +152,49 @@ async function addNewProduct() {
 async function productsByCategory() {}
 
 // menu option 4
-async function productsBySupplier() {}
+async function productsBySupplier() {
+}
+
 
 // menu option 5
-async function viewAllOffers() {}
+async function viewAllOffers() {
+  try {
+    const { minPrice, maxPrice } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "minPrice",
+        message: "Enter minimum price",
+        validate: value => !isNaN(value) ? true : 'Please enter a number',
+      },
+      {
+        type: "input",
+        name: "maxPrice",
+        message: "Enter maximum price",
+        validate: value => !isNaN(value) ? true : 'Please enter a number',
+      },
+    ]);
+
+    const filteredOffers = await OfferModel.aggregate([
+      {
+        $match: {
+          price: { $gte: Number(minPrice), $lte: Number(maxPrice) }
+        }
+      }
+    ]);
+
+    filteredOffers.forEach((offer, index) => {
+      console.log(`Offer ${index + 1}:`);
+      console.log(`Products: ${offer.products.join(', ')}`);
+      console.log(`Price: $${offer.price}`);
+      console.log(`Active: ${offer.active ? 'Yes' : 'No'}`);
+      console.log('------------------------');
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
 
 // menu option 6
 async function specificCategory() {}
@@ -159,8 +211,11 @@ async function orderForOffers() {}
 // menu option 10
 async function shipOrders() {}
 
-// menu option 111
-async function addNewSupplier() {}
+// menu option 11
+async function addNewSupplier() {   
+      
+}
+
 
 // menu option 12
 async function viewSuppliers() {}
@@ -172,9 +227,17 @@ async function sumOfAllProfits() {}
 
 // Exit
 async function closeDBconnection() {
-  await mongoose.connection.close();
-  process.exit();
+  try {
+    await mongoose.disconnect();
+    console.log("Leaving menu.", "Disconnected from MongoDB");
+  } catch (error) {
+    console.log("Error disconnecting from MongoDB", error);
+  }
 }
+
 (async () => {
-  await menu();
-})();
+    await connectToDB();
+    await menu();
+  })();
+  
+
