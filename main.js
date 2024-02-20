@@ -8,10 +8,11 @@ import {
 } from "./models.js";
 import { sampleOffers } from "./sampleData.js";
 
-let supplierModel_collection = SupplierModel.collection;
-
+let supplier_collection = SupplierModel.collection;
+let offer_collection = OfferModel.collection;
+let salesOrder_collection = SalesOrderModel.collection;
+let product_collection = ProductModel.collection;
 // await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
-
 
 const connectToDB = async () => {
   try {
@@ -107,54 +108,13 @@ const menu = async () => {
 async function addNewCategory() {}
 
 // menu option 2
-async function addNewProduct() {
-  try {
-    let allSuppliers = await SupplierModel.aggregate([
-      {
-        $group: { _id: "$name" },
-      },
-    ]);
-    console.log(allSuppliers);
-
-    let suppliersList = allSuppliers.map((supplier) => supplier._id);
-
-    while (true) {
-      const { supplier_choice } = await inquirer.prompt([
-        {
-          type: "list",
-          name: "supplier_choice",
-          message: "Choose Supplier",
-          choices: [...suppliersList, "New supplier", "Exit"],
-        },
-      ]);
-      console.log(supplier_choice);
-      if (supplier_choice === "New Supplier") {
-        break;
-      } else if (supplier_choice === "Exit") {
-        return;
-      } else {
-        const supplier = supplier_choice;
-        ProductModel.aggregate([
-          {
-            $match: { "$suppler.name": supplier_choice },
-          },
-          { $project: { _id: 1 } },
-        ]);
-        console.log("Supplier:", supplier);
-      }
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
+async function addNewProduct() {}
 
 // menu option 3
 async function productsByCategory() {}
 
 // menu option 4
-async function productsBySupplier() {
-}
-
+async function productsBySupplier() {}
 
 // menu option 5
 async function viewAllOffers() {
@@ -164,37 +124,35 @@ async function viewAllOffers() {
         type: "input",
         name: "minPrice",
         message: "Enter minimum price",
-        validate: value => !isNaN(value) ? true : 'Please enter a number',
+        validate: (value) => (!isNaN(value) ? true : "Please enter a number"),
       },
       {
         type: "input",
         name: "maxPrice",
         message: "Enter maximum price",
-        validate: value => !isNaN(value) ? true : 'Please enter a number',
+        validate: (value) => (!isNaN(value) ? true : "Please enter a number"),
       },
     ]);
 
     const filteredOffers = await OfferModel.aggregate([
       {
         $match: {
-          price: { $gte: Number(minPrice), $lte: Number(maxPrice) }
-        }
-      }
+          price: { $gte: Number(minPrice), $lte: Number(maxPrice) },
+        },
+      },
     ]);
 
     filteredOffers.forEach((offer, index) => {
       console.log(`Offer ${index + 1}:`);
-      console.log(`Products: ${offer.products.join(', ')}`);
+      console.log(`Products: ${offer.products.join(", ")}`);
       console.log(`Price: $${offer.price}`);
-      console.log(`Active: ${offer.active ? 'Yes' : 'No'}`);
-      console.log('------------------------');
+      console.log(`Active: ${offer.active ? "Yes" : "No"}`);
+      console.log("------------------------");
     });
   } catch (error) {
     console.log(error);
   }
 }
-
-
 
 // menu option 6
 async function specificCategory() {}
@@ -212,10 +170,7 @@ async function orderForOffers() {}
 async function shipOrders() {}
 
 // menu option 11
-async function addNewSupplier() {   
-      
-}
-
+async function addNewSupplier() {}
 
 // menu option 12
 async function viewSuppliers() {}
@@ -236,8 +191,6 @@ async function closeDBconnection() {
 }
 
 (async () => {
-    await connectToDB();
-    await menu();
-  })();
-  
-
+  await connectToDB();
+  await menu();
+})();
