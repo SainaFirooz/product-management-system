@@ -109,16 +109,25 @@ async function addNewProduct() {
       const { supplier_choice } = await inquirer.prompt([
         {
           type: "list",
-          name: "Suppliers list",
+          name: "supplier_choice",
           message: "Choose Supplier",
           choices: [...suppliersList, "New supplier", "Exit"],
         },
       ]);
+      console.log(supplier_choice);
       if (supplier_choice === "New Supplier") {
+        break;
       } else if (supplier_choice === "Exit") {
-        break;
+        return;
       } else {
-        break;
+        const supplier = supplier_choice;
+        ProductModel.aggregate([
+          {
+            $match: { "$suppler.name": supplier_choice },
+          },
+          { $project: { _id: 1 } },
+        ]);
+        console.log("Supplier:", supplier);
       }
     }
   } catch (error) {
