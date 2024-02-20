@@ -176,7 +176,7 @@ async function viewAllOffers() {
     filteredOffers.forEach((offer, index) => {
       console.log(`Offer ${index + 1}:`);
       console.log(`Products: ${offer.products.join(', ')}`);
-      console.log(`Price: ${offer.price}`);
+      console.log(`Price: $${offer.price}`);
       console.log(`Active: ${offer.active ? 'Yes' : 'No'}`);
       console.log('------------------------');
     });
