@@ -90,16 +90,19 @@ export const sampleOffers = [
     products: ["Laptop", "Smartphone"],
     price: 1800,
     active: true,
+    category: ["Electronics"]
   },
   {
     products: ["T-shirt", "Shampoo"],
     price: 30,
     active: true,
+    category: ["Clothing", "Beauty & Personal Care"]
   },
   {
     products: ["Refrigerator", "Smartphone", "Soccer Ball"],
     price: 1830,
     active: false,
+    category: ["Home Appliances", "Electronics", "Sports & Outdoors"]
   },
 ];
 export const sampleSuppliers = [
