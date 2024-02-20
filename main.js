@@ -8,7 +8,11 @@ import {
 } from "./models.js";
 import { sampleOffers } from "./sampleData.js";
 
-let supplierModel_collection = SupplierModel.collection;
+let supplier_collection = SupplierModel.collection;
+let offer_collection = OfferModel.collection;
+let salesOrder_collection = SalesOrderModel.collection;
+let product_collection = ProductModel.collection;
+// await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
 
 const connectToDB = async () => {
   try {
@@ -104,46 +108,7 @@ const menu = async () => {
 async function addNewCategory() {}
 
 // menu option 2
-async function addNewProduct() {
-  try {
-    let allSuppliers = await SupplierModel.aggregate([
-      {
-        $group: { _id: "$name" },
-      },
-    ]);
-    console.log(allSuppliers);
-
-    let suppliersList = allSuppliers.map((supplier) => supplier._id);
-
-    while (true) {
-      const { supplier_choice } = await inquirer.prompt([
-        {
-          type: "list",
-          name: "supplier_choice",
-          message: "Choose Supplier",
-          choices: [...suppliersList, "New supplier", "Exit"],
-        },
-      ]);
-      console.log(supplier_choice);
-      if (supplier_choice === "New Supplier") {
-        break;
-      } else if (supplier_choice === "Exit") {
-        return;
-      } else {
-        const supplier = supplier_choice;
-        ProductModel.aggregate([
-          {
-            $match: { "$suppler.name": supplier_choice },
-          },
-          { $project: { _id: 1 } },
-        ]);
-        console.log("Supplier:", supplier);
-      }
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
+async function addNewProduct() {}
 
 // menu option 3
 async function productsByCategory() {}
