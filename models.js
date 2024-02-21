@@ -26,8 +26,7 @@ const ProductSchema = mongoose.Schema({
 
 const SalesOrdersSchema = mongoose.Schema({
   order: {
-    type: [String],
-    required: true,
+    type: String,
   },
   offer: {
     type: String,
