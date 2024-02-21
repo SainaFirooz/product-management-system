@@ -174,5 +174,21 @@ export async function orderForProducts() {
 export async function shipOrders() {}
 
 // menu option 13
+
 export async function viewAllSales() {
+  try {
+    const allSales = await SalesOrderModel.find({});
+
+    allSales.forEach((sale, index) => {
+      console.log(
+        `Sale ${index + 1}:\nOrder: ${sale.order}\nQuantity: ${
+          sale.quantity
+        }\nStatus: ${sale.status}\nAdditional Details: ${
+          sale.additional_detail
+        }\n------------------------`
+      );
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
