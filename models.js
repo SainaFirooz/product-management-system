@@ -44,13 +44,13 @@ const SalesOrdersSchema = mongoose.Schema({
   },
 });
 
-const categorySchema = mongoose.Schema({
+const CategorySchema = mongoose.Schema({
   name: {type: String, required: true},
   description: {type: String},
   products: [String]
 })
 
-export const categoryModel = mongoose.model("Category", categorySchema)
+export const CategoryModel = mongoose.model("Category", CategorySchema)
 export const ProductModel = mongoose.model("Product", ProductSchema);
 export const OfferModel = mongoose.model("Offer", OfferSchema);
 export const SupplierModel = mongoose.model("Supplier", SupplierSchema);
