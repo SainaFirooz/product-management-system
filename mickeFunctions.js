@@ -93,19 +93,46 @@ export const addNewProduct = async () => {
                 newProduct[key] = choice;
               }
             } else {
+              const newCategoryList = [];
+              console.log(newCategoryList);
               const currentCategories = await CategoryModel.aggregate([
                 {
                   $group: { _id: "$name" },
                 },
               ]);
-              const { category_choice } = await inquirer.prompt([
-                {
-                  type: "list",
-                  name: "category_choice",
-                  message: "Select a category",
-                  choices: [...currentCategories.map((x) => x._id), "Exit"],
-                },
-              ]);
+              while (true) {
+                const { category_choice } = await inquirer.prompt([
+                  {
+                    type: "list",
+                    name: "category_choice",
+                    message: "Add a category",
+                    choices: [
+                      ...currentCategories.map((x) => x._id),
+                      "Continue",
+                    ],
+                  },
+                ]);
+                if (
+                  !newCategoryList.includes(category_choice) &&
+                  category_choice != "Exit"
+                ) {
+                  newCategoryList.push(category_choice);
+                  console.log(newCategoryList);
+
+                  const { proceed } = await inquirer.prompt([
+                    {
+                      type: "confirm",
+                      name: "proceed",
+                      message: "Add another category? (y/n)",
+                      default: false,
+                    },
+                  ]);
+                  if (!proceed) break;
+                } else if (category_choice === "Continue") {
+                  break;
+                }
+              }
+              newProduct[key] = newCategoryList;
             }
           }
           console.log("After Product:", newProduct);
