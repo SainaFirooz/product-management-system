@@ -249,8 +249,9 @@ export async function viewAllSales() {
     const allSales = await SalesOrderModel.find({});
 
     allSales.forEach((sale, index) => {
+      let orderOrOffer = sale.order ? `Order: ${sale.order}` : `Offer: ${sale.offer}`;
       console.log(
-        `Sale ${index + 1}:\nOrder: ${sale.order}\nQuantity: ${
+        `Sale ${index + 1}:\n${orderOrOffer}\nQuantity: ${
           sale.quantity
         }\nStatus: ${sale.status}\nAdditional Details: ${
           sale.additional_detail
