@@ -1,4 +1,5 @@
 import mongoose, { connect } from "mongoose";
+import { addNewProduct } from "./mickeFunctions.js";
 import inquirer from "inquirer";
 import {
   SupplierModel,
@@ -268,12 +269,10 @@ async function orderForProducts() {
         status: status,
         orderadditional_detail: additionalDetails,
       });
-      
 
       await newOrder.save();
       console.log(`Order for ${product} has been created\n ${newOrder}`);
     }
-
   } catch (error) {
     console.log(error);
   }
