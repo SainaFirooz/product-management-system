@@ -3,12 +3,14 @@ import {
   OfferModel,
   SalesOrderModel,
   ProductModel,
+  CategoryModel,
 } from "./models.js";
 import inquirer from "inquirer";
 let supplier_collection = SupplierModel.collection;
 let offer_collection = OfferModel.collection;
 let salesOrder_collection = SalesOrderModel.collection;
 let product_collection = ProductModel.collection;
+let category_collection = CategoryModel.collection;
 
 // Option 2 Add new product
 export const addNewProduct = async () => {
@@ -28,8 +30,9 @@ export const addNewProduct = async () => {
           choices: [...suppliersList, "New supplier", "Exit"],
         },
       ]);
-      if (supplier_choice === "New Supplier") {
-        break;
+      if (supplier_choice === "New supplier") {
+        await addNewSupplier();
+        return;
       } else if (supplier_choice === "Exit") {
         return;
       } else {
@@ -63,29 +66,51 @@ export const addNewProduct = async () => {
 
           let newItems = { ...supplier_productList[0] };
           for (const key in newItems) {
-            if (isNaN(newItems[key])) {
-              newItems[key] = "";
-              const { choice } = await inquirer.prompt([
-                {
-                  type: "input",
-                  name: "choice",
-                  message: `Enter: ${key}`,
-                  validate: (value) =>
-                    isNaN(value) ? true : "Dont use only numbers",
-                },
-              ]);
-              newProduct[key] = choice;
+            console.log(key);
+            if (key != "category") {
+              if (isNaN(newItems[key])) {
+                newItems[key] = "";
+                const { choice } = await inquirer.prompt([
+                  {
+                    type: "input",
+                    name: "choice",
+                    message: `Enter product ${key}`,
+                    validate: (value) =>
+                      isNaN(value) ? true : "Dont use only numbers",
+                  },
+                ]);
+                newProduct[key] = choice;
+              } else {
+                newItems[key] = 0;
+                const { choice } = await inquirer.prompt([
+                  {
+                    type: "input",
+                    name: "choice",
+                    message: `Enter: ${key}`,
+                    validate: (value) => (!isNaN(value) ? true : "Use numbers"),
+                  },
+                ]);
+                newProduct[key] = choice;
+              }
             } else {
-              newItems[key] = 0;
-              const { choice } = await inquirer.prompt([
+              const currentCategories = await CategoryModel.aggregate([
                 {
-                  type: "input",
-                  name: "choice",
-                  message: `Enter: ${key}`,
-                  validate: (value) => (!isNaN(value) ? true : "Use numbers"),
+                  $group: { _id: "$name" },
                 },
+                { $project: { _id: 0 } },
               ]);
-              newProduct[key] = choice;
+              console.log(currentCategories);
+              // while (true) {
+              //   const { category_choice } = await inquirer.prompt([
+              //     {
+              //       type: "list",
+              //       name: "category_choice",
+              //       message: "Select a category",
+              //       choices: [],
+              //     },
+              //   ]);
+              // }
+              // newProduct[key] =
             }
           }
           console.log("After Product:", newProduct);
@@ -93,12 +118,13 @@ export const addNewProduct = async () => {
             {
               name: "decision",
               type: "confirm",
-              message: "Insert into collection?",
+              message: "Insert into collection? (y/n)",
               default: false,
             },
           ]);
-          if (decision) await product_collection.insertOne(newProduct);
-          else {
+          if (decision) {
+            await product_collection.insertOne(newProduct);
+          } else {
             console.log("Insertion cancelled.\n -------------------------");
             return;
           }
@@ -110,6 +136,7 @@ export const addNewProduct = async () => {
   }
 };
 
+//Option 9 Order for offers
 export const orderForOffers = async () => {
   try {
     let currentOffers = await OfferModel.find({});
@@ -127,7 +154,7 @@ export const orderForOffers = async () => {
       },
     ]);
     if (offer_choice != "Exit") {
-      const FINAL_offer = offer_choice.slice(3).split(" ");
+      const FINAL_offer = offer_choice.slice(3);
       console.log(FINAL_offer);
       const { FINAL_quantity } = await inquirer.prompt({
         type: "input",
@@ -154,18 +181,20 @@ export const orderForOffers = async () => {
         default: "N/A",
       });
       const newSalesOrder = new SalesOrderModel({
-        offer: [...FINAL_offer],
+        offer: FINAL_offer,
         quantity: FINAL_quantity,
         status: "pending",
         additional_detail: FINAL_details,
       });
+
       console.log("NEW ORDER READY:", newSalesOrder);
 
       const { insert_decision } = await inquirer.prompt([
         {
           type: "confirm",
           name: "insert_decision",
-          message: "Insert into collection?",
+          message: "Insert into collection? (y/n)",
+          default: false,
         },
       ]);
       if (insert_decision) {
@@ -174,6 +203,49 @@ export const orderForOffers = async () => {
         console.log("Operation cancelled.\n -------------------------");
         return;
       }
+    } else {
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addNewSupplier = async () => {
+  try {
+    const { s_name, sc_name, sc_email } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "s_name",
+        message: "New supplier name:",
+      },
+      {
+        type: "input",
+        name: "sc_name",
+        message: "New supplier contact:",
+      },
+      {
+        type: "input",
+        name: "sc_email",
+        message: "New supplier email:",
+      },
+    ]);
+    const newSupplier = new SupplierModel({
+      name: s_name,
+      contact: {
+        name: sc_name,
+        email: sc_email,
+      },
+    });
+    const { insert_decision } = await inquirer.prompt([
+      {
+        input: "confirm",
+        name: "insert_decision",
+        message: "Insert new supplier into collection?",
+      },
+    ]);
+    if (insert_decision) {
+      await supplier_collection.insertOne(newSupplier);
     } else {
       return;
     }

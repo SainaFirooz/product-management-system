@@ -1,5 +1,9 @@
 import mongoose, { connect } from "mongoose";
-import { addNewProduct, orderForOffers } from "./mickeFunctions.js";
+import {
+  addNewProduct,
+  orderForOffers,
+  addNewSupplier,
+} from "./mickeFunctions.js";
 import inquirer from "inquirer";
 import {
   SupplierModel,
@@ -283,7 +287,6 @@ async function orderForProducts() {
 async function shipOrders() {}
 
 // menu option 11
-async function addNewSupplier() {}
 
 // menu option 12
 async function viewSuppliers() {}
