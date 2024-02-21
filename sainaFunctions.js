@@ -41,7 +41,9 @@ export async function viewAllOffers() {
           index + 1
         }:\nProducts: ${offer.products.join(", ")}\nPrice: $${
           offer.price
-        }\nActive: ${offer.active ? "Yes" : "No"}\n------------------------`
+        }\nActive: ${
+          offer.active ? "Yes" : "No"
+        }\n---------------------------------------------`
       );
     });
   } catch (error) {
@@ -159,19 +161,86 @@ export async function orderForProducts() {
       });
 
       await newOrder.save();
-      console.log(`Order for ${newOrder.order[0]} has been created with the following details:
+      console.log(`Order for ${newOrder.order} has been created with the following details:
       Quantity: ${newOrder.quantity}
       Status: ${newOrder.status}
       Additional Detail: ${newOrder.additional_detail}
       Order ID: ${newOrder._id}`);
-      }
+    }
   } catch (error) {
     console.log(error);
   }
 }
 
 // menu option 10
-export async function shipOrders() {}
+
+export async function shipOrders() {
+  try {
+    const allOrders = await SalesOrderModel.find({ status: "pending" });
+
+    // console.log(allOrders);
+
+    let choices = [];
+
+    allOrders.forEach((order) => {
+      if (order.order) {
+        choices.push(order.order);
+      } else if (order.offer) {
+        choices.push(order.offer);
+      }
+    });
+
+    choices.push("Exit");
+
+    const { orderOrOffer } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "orderOrOffer",
+        message: "Choose an order to ship: ",
+        choices: choices,
+      },
+    ]);
+
+    if (orderOrOffer === "Exit") {
+      return;
+    } else {
+      const orderToFetch = await SalesOrderModel.findOne({
+        $or: [{ order: orderOrOffer }, { offer: orderOrOffer }],
+      });
+
+      if (orderToFetch) {
+        console.log(`Order Details:
+        ID: ${orderToFetch._id}
+        Product: ${orderToFetch.order}
+        Quantity: ${orderToFetch.quantity}
+        Status: ${orderToFetch.status}
+        Additional Details: ${orderToFetch.additional_detail}
+`);
+
+        const orderToShip = await SalesOrderModel.findOneAndUpdate(
+          { $or: [{ order: orderOrOffer }, { offer: orderOrOffer }] },
+          { status: "shipped" },
+          { new: true }
+        );
+
+        console.log(`Updated Order Details:
+        ID: ${orderToShip._id}
+        Product: ${orderToShip.order}
+        Quantity: ${orderToShip.quantity}
+        Status: ${orderToShip.status} (updated)
+        Additional Details: ${orderToShip.additional_detail}
+         `);
+        console.log(
+          "Order has been shipped successfully\n---------------------------------------------"
+        );
+      } else {
+        console.log("No order or offer found with the provided name");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // menu option 13
 
