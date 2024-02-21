@@ -1,3 +1,14 @@
+import {
+  SupplierModel,
+  OfferModel,
+  SalesOrderModel,
+  ProductModel,
+} from "./models.js";
+import inquirer from "inquirer";
+let supplier_collection = SupplierModel.collection;
+let offer_collection = OfferModel.collection;
+let salesOrder_collection = SalesOrderModel.collection;
+let product_collection = ProductModel.collection;
 export const addNewProduct = async () => {
   try {
     let allSuppliers = await SupplierModel.aggregate([
@@ -83,6 +94,11 @@ export const addNewProduct = async () => {
             }
           }
           console.log("After Product:", newProduct);
+          const { decision } = inquirer.prompt([
+            {
+              type: "confirm",
+            },
+          ]);
         }
       }
     }
