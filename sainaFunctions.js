@@ -136,7 +136,8 @@ export async function orderForProducts() {
           type: "input",
           name: "quantity",
           message: "Enter quantity: ",
-          validate: (value) => (!isNaN(value) ? true : "Please enter a number"),
+          validate: (value) =>
+            !isNaN(value) ? true : "Please enter a number: ",
           default: 1,
         },
         {
@@ -178,8 +179,6 @@ export async function shipOrders() {
   try {
     const allOrders = await SalesOrderModel.find({ status: "pending" });
 
-    // console.log(allOrders);
-
     let choices = [];
 
     allOrders.forEach((order) => {
@@ -208,31 +207,54 @@ export async function shipOrders() {
         $or: [{ order: orderOrOffer }, { offer: orderOrOffer }],
       });
 
+      let product; 
+
       if (orderToFetch) {
+        product = await ProductModel.findOne({ name: orderOrOffer });
+
+        if (!product) {
+          console.log('Product not found');
+          return;
+        }
+
+        
+        let totalCost = product.price * orderToFetch.quantity;
+
         console.log(`Order Details:
         ID: ${orderToFetch._id}
-        Product: ${orderToFetch.order}
+        Product: ${orderToFetch.order || orderToFetch.offer}
         Quantity: ${orderToFetch.quantity}
         Status: ${orderToFetch.status}
         Additional Details: ${orderToFetch.additional_detail}
+        Total Cost: ${totalCost}
 `);
+
+        if (product.stock < orderToFetch.quantity) {
+          console.log('Not enough stock to complete the order');
+          return;
+        }
 
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
           { $or: [{ order: orderOrOffer }, { offer: orderOrOffer }] },
           { status: "shipped" },
           { new: true }
-        );
+        ).exec();
 
         console.log(`Updated Order Details:
         ID: ${orderToShip._id}
-        Product: ${orderToShip.order}
+        Product: ${orderToShip.order || orderToShip.offer}
         Quantity: ${orderToShip.quantity}
         Status: ${orderToShip.status} (updated)
         Additional Details: ${orderToShip.additional_detail}
          `);
         console.log(
-          "Order has been shipped successfully\n---------------------------------------------"
+          "Order has been shipped successfully!\nIt will be delivered within 7 business days\n---------------------------------------------"
         );
+
+        console.log(`Stock before sale: ${product.stock}`);
+        product.stock -= orderToShip.quantity;
+        console.log(`Stock after sale: ${product.stock}`);
+        await product.save();
       } else {
         console.log("No order or offer found with the provided name");
       }
@@ -249,7 +271,9 @@ export async function viewAllSales() {
     const allSales = await SalesOrderModel.find({});
 
     allSales.forEach((sale, index) => {
-      let orderOrOffer = sale.order ? `Order: ${sale.order}` : `Offer: ${sale.offer}`;
+      let orderOrOffer = sale.order
+        ? `Order: ${sale.order}`
+        : `Offer: ${sale.offer}`;
       console.log(
         `Sale ${index + 1}:\n${orderOrOffer}\nQuantity: ${
           sale.quantity
