@@ -14,13 +14,11 @@ const SupplierSchema = mongoose.Schema({
     email: { type: String },
   },
 });
-
 const CategorySchema = mongoose.Schema({
-  name: {type: String, required: true},
-  description: {type: String},
-  products: [String]
-})
-
+  name: { type: String, required: true },
+  description: { type: String },
+  products: [String],
+});
 const ProductSchema = mongoose.Schema({
   name: { type: String },
   category: CategorySchema,
@@ -50,9 +48,7 @@ const SalesOrdersSchema = mongoose.Schema({
   },
 });
 
-
-
-export const CategoryModel = mongoose.model("Category", CategorySchema)
+export const CategoryModel = mongoose.model("Category", CategorySchema);
 export const ProductModel = mongoose.model("Product", ProductSchema);
 export const OfferModel = mongoose.model("Offer", OfferSchema);
 export const SupplierModel = mongoose.model("Supplier", SupplierSchema);

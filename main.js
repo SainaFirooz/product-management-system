@@ -1,11 +1,17 @@
 import mongoose, { connect } from "mongoose";
+import {
+  addNewProduct,
+  orderForOffers,
+  addNewSupplier,
+  sumOfAllProfits,
+} from "./mickeFunctions.js";
 import inquirer from "inquirer";
 import {
   SupplierModel,
   OfferModel,
   SalesOrderModel,
   ProductModel,
-  CategoryModel
+  CategoryModel,
 } from "./models.js";
 import { sampleOffers } from "./sampleData.js";
 import { viewAllOffers, specificCategory, orderForProducts, shipOrders, viewAllSales } from "./sainaFunctions.js";
@@ -105,8 +111,6 @@ const menu = async () => {
     console.log("Error", error);
   }
 };
-
-
 
 async function closeDBconnection() {
   try {
