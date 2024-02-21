@@ -1754,6 +1754,12 @@ export const sampleOffers = [
     active: false,
     category: ["Home Appliances", "Electronics", "Sports & Outdoors"]
   },
+  {
+    products: ["Wireless Mouse", "Travel Adapter", "Wireless Keyboard"],
+    price: 65,
+    active: true,
+    category: ["Electronics", "Miscellaneous"]
+  },
 ];
 export const sampleSuppliers = [
   {

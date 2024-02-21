@@ -8,12 +8,12 @@ import {
   CategoryModel
 } from "./models.js";
 import { sampleOffers } from "./sampleData.js";
+import { viewAllOffers, specificCategory, orderForProducts, shipOrders, viewAllSales } from "./sainaFunctions.js";
 
 let supplier_collection = SupplierModel.collection;
 let offer_collection = OfferModel.collection;
 let salesOrder_collection = SalesOrderModel.collection;
 let product_collection = ProductModel.collection;
-// await connect("mongodb://127.0.0.1:27017/mms_assignment_2");
 
 const connectToDB = async () => {
   try {
