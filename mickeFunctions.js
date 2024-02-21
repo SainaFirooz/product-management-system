@@ -97,20 +97,15 @@ export const addNewProduct = async () => {
                 {
                   $group: { _id: "$name" },
                 },
-                { $project: { _id: 0 } },
               ]);
-              console.log(currentCategories);
-              // while (true) {
-              //   const { category_choice } = await inquirer.prompt([
-              //     {
-              //       type: "list",
-              //       name: "category_choice",
-              //       message: "Select a category",
-              //       choices: [],
-              //     },
-              //   ]);
-              // }
-              // newProduct[key] =
+              const { category_choice } = await inquirer.prompt([
+                {
+                  type: "list",
+                  name: "category_choice",
+                  message: "Select a category",
+                  choices: [...currentCategories.map((x) => x._id), "Exit"],
+                },
+              ]);
             }
           }
           console.log("After Product:", newProduct);
