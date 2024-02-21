@@ -5,6 +5,7 @@ import {
   OfferModel,
   SalesOrderModel,
   ProductModel,
+  CategoryModel
 } from "./models.js";
 import { sampleOffers } from "./sampleData.js";
 import { viewAllOffers, specificCategory, orderForProducts, shipOrders, viewAllSales } from "./sainaFunctions.js";
@@ -105,7 +106,21 @@ const menu = async () => {
 };
 
 // menu option 1
-async function addNewCategory() {}
+async function addNewCategory() {
+  try{
+    const { category_choice } = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'category_choice',
+        message: 'Enter new category'
+      }
+    ]);
+    console.log('You´ve entered', category_choice );
+    
+  }catch(error){
+    console.log(error);
+  }
+}
 
 // menu option 2
 async function addNewProduct() {}
