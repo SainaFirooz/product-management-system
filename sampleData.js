@@ -1450,6 +1450,7 @@ export const sampleOffers = [
   },
   {
     products: ["Wireless Mouse", "Travel Adapter", "Wireless Keyboard"],
+    price: 65,
     active: true,
     category: ["Electronics", "Miscellaneous"]
   },
