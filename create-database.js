@@ -25,4 +25,4 @@ salesOrderModel_collection.insertMany(sampleOrders);
 productModel_collection.insertMany(sampleProducts);
 offerModel_collection.insertMany(sampleOffers);
 supplierModel_collection.insertMany(sampleSuppliers);
-categoryModel_collection.insertMany(sampleCategories)
+categoryModel_collection.insertMany(sampleCategories);
