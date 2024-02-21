@@ -27,7 +27,6 @@ const ProductSchema = mongoose.Schema({
 const SalesOrdersSchema = mongoose.Schema({
   order: {
     type: [String],
-    required: true,
   },
   offer: {
     type: String,
@@ -45,6 +44,13 @@ const SalesOrdersSchema = mongoose.Schema({
   },
 });
 
+const categorySchema = mongoose.Schema({
+  name: {type: String, required: true},
+  description: {type: String},
+  products: [String]
+})
+
+export const categoryModel = mongoose.model("Category", categorySchema)
 export const ProductModel = mongoose.model("Product", ProductSchema);
 export const OfferModel = mongoose.model("Offer", OfferSchema);
 export const SupplierModel = mongoose.model("Supplier", SupplierSchema);
