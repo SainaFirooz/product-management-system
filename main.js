@@ -105,48 +105,8 @@ const menu = async () => {
   }
 };
 
-// menu option 1
-async function addNewCategory() {
-  try{
-    const { category_choice } = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'category_choice',
-        message: 'Enter new category'
-      }
-    ]);
-    console.log('You´ve entered', category_choice );
-    
-  }catch(error){
-    console.log(error);
-  }
-}
 
-// menu option 2
-async function addNewProduct() {}
 
-// menu option 3
-async function productsByCategory() {}
-
-// menu option 4
-async function productsBySupplier() {}
-
-// menu option 7
-async function productsInStock() {}
-
-// menu option 9
-async function orderForOffers() {}
-
-// menu option 11
-async function addNewSupplier() {}
-
-// menu option 12
-async function viewSuppliers() {}
-
-// menu option 14
-async function sumOfAllProfits() {}
-
-// Exit
 async function closeDBconnection() {
   try {
     await mongoose.disconnect();
