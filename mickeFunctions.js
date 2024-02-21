@@ -127,7 +127,8 @@ export const orderForOffers = async () => {
       },
     ]);
     if (offer_choice != "Exit") {
-      const FINAL_Offer = offer_choice.slice(3).split(" ");
+      const FINAL_offer = offer_choice.slice(3).split(" ");
+      console.log(FINAL_offer);
       const { FINAL_quantity } = await inquirer.prompt({
         type: "input",
         name: "FINAL_quantity",
@@ -153,11 +154,12 @@ export const orderForOffers = async () => {
         default: "N/A",
       });
       const newSalesOrder = new SalesOrderModel({
-        offer: FINAL_Offer,
+        offer: [...FINAL_offer],
         quantity: FINAL_quantity,
         status: "pending",
         additional_detail: FINAL_details,
       });
+      console.log("NEW ORDER READY:", newSalesOrder);
 
       const { insert_decision } = await inquirer.prompt([
         {
