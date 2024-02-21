@@ -1805,4 +1805,41 @@ export const sampleOrders = [
   },
 ];
 
-
+export const sampleCategories = [
+  {
+    name: 'Electronics',
+    description: 'Electronic description'
+  },
+  {
+    name: 'Casual Apparel',
+    description: 'Clothing description'
+  },
+  {
+    name: 'Beauty & Personal Care',
+    description: 'Beauty & personal care description'
+  },
+  {
+    name: 'Sports & Outdoors',
+    description: 'Sports & Outdoor description'
+  },
+  {
+    name: 'Audio',
+    description: 'Audio description'
+  },
+  {
+    name: 'Clothing',
+    description: 'Cloth item description'
+  },
+  {
+    name: 'Home Appliance',
+    description: 'Home Appliance description'
+  },
+  {
+    name: 'Accesories',
+    description: 'Accesories description'
+  },
+  {
+    name: 'Miscellaneous',
+    description: 'Miscellaneous description'
+  }
+]
