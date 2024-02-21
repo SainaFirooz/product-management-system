@@ -275,3 +275,64 @@ export const addNewSupplier = async () => {
     console.log(error);
   }
 };
+
+export const sumOfAllProfits = async () => {
+  const allProducts = await ProductModel.aggregate([
+    {
+      $match: { price: { $gt: 0 } },
+    },
+  ]);
+  const sumOfAll = await ProductModel.aggregate([
+    {
+      $match: { price: { $gt: 0 } },
+    },
+    {
+      $group: {
+        _id: null,
+        profit: {
+          $sum: { $multiply: [{ $subtract: ["$price", "$cost"] }, 0.7] },
+        },
+      },
+    },
+    { $project: { _id: 0, profit: 1 } },
+  ]);
+  console.log(sumOfAll);
+
+  const { product } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "product",
+      message: "Find profit of:",
+      choices: [...allProducts.map((x) => x.name).sort(), "Exit"],
+    },
+  ]);
+  if (product != "Exit") {
+    let matchingOffers = await OfferModel.aggregate([
+      {
+        $match: {
+          products: { $in: [product] },
+        },
+      },
+      { $project: { _id: 0, price: 1, products: 1 } },
+    ]);
+    console.log(matchingOffers);
+    if (matchingOffers.length > 0) {
+      console.log("MATCHING OFFERS: ", matchingOffers);
+      matchingOffers.forEach(async (offer, index) => {
+        let productCost = await ProductModel.aggregate([
+          {
+            $match: { name: offer.products[index] },
+          },
+          {
+            $group: {
+              _id: null,
+              totalPrice: { $sum: "$cost" },
+            },
+          },
+          { $project: { _id: 0, totalPrice: 1 } },
+        ]);
+        console.log("PRODUCT COST: ", productCost);
+      });
+    }
+  }
+};

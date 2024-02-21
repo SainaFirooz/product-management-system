@@ -3,6 +3,7 @@ import {
   addNewProduct,
   orderForOffers,
   addNewSupplier,
+  sumOfAllProfits,
 } from "./mickeFunctions.js";
 import inquirer from "inquirer";
 import {
