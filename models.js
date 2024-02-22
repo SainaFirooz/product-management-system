@@ -14,10 +14,14 @@ const SupplierSchema = mongoose.Schema({
     email: { type: String },
   },
 });
-
+const CategorySchema = mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String },
+  products: [String],
+});
 const ProductSchema = mongoose.Schema({
   name: { type: String },
-  category: { type: String },
+  category: CategorySchema,
   price: { type: Number },
   cost: { type: Number },
   stock: { type: Number },
@@ -26,8 +30,7 @@ const ProductSchema = mongoose.Schema({
 
 const SalesOrdersSchema = mongoose.Schema({
   order: {
-    type: [String],
-    required: true,
+    type: String,
   },
   offer: {
     type: String,
@@ -45,6 +48,7 @@ const SalesOrdersSchema = mongoose.Schema({
   },
 });
 
+export const CategoryModel = mongoose.model("Category", CategorySchema);
 export const ProductModel = mongoose.model("Product", ProductSchema);
 export const OfferModel = mongoose.model("Offer", OfferSchema);
 export const SupplierModel = mongoose.model("Supplier", SupplierSchema);

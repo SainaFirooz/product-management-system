@@ -1,7 +1,10 @@
 export const sampleProducts = [
   {
     name: "Laptop",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Mobile Computing",
+    },
     price: 1000,
     cost: 800,
     stock: 50,
@@ -15,7 +18,10 @@ export const sampleProducts = [
   },
   {
     name: "Smartphone",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Mobile Computing",
+    },
     price: 800,
     cost: 600,
     stock: 40,
@@ -29,7 +35,10 @@ export const sampleProducts = [
   },
   {
     name: "T-shirt",
-    category: "Clothing",
+    category: {
+      name: "Casual Apparel",
+      description: "Comfortable, Versatile, Everyday Wear",
+    },
     price: 20,
     cost: 10,
     stock: 100,
@@ -43,7 +52,10 @@ export const sampleProducts = [
   },
   {
     name: "Refrigerator",
-    category: "Home Appliances",
+    category: {
+      name: "Electronics",
+      description: "Home Appliance",
+    },
     price: 1200,
     cost: 1000,
     stock: 30,
@@ -57,7 +69,10 @@ export const sampleProducts = [
   },
   {
     name: "Shampoo",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Hair Care Essentials",
+    },
     price: 10,
     cost: 5,
     stock: 80,
@@ -71,7 +86,10 @@ export const sampleProducts = [
   },
   {
     name: "Soccer Ball",
-    category: "Sports & Outdoors",
+    category: {
+      name: "Sports & Outdoors",
+      description: "Active Recreation Equipment",
+    },
     price: 30,
     cost: 20,
     stock: 60,
@@ -85,7 +103,10 @@ export const sampleProducts = [
   },
   {
     name: "Smartwatch",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Mobile Tech Accessory",
+    },
     price: 200,
     cost: 150,
     stock: 50,
@@ -94,12 +115,15 @@ export const sampleProducts = [
       contact: {
         name: "John Doe",
         email: "john@electronicsupplier.com",
-      }
+      },
     },
   },
   {
     name: "Smart Wireless Earbuds",
-    category: "Electronics",
+    category: {
+      name: "Audio",
+      description: "Wireless Sound Innovation",
+    },
     price: 100,
     cost: 70,
     stock: 60,
@@ -113,7 +137,10 @@ export const sampleProducts = [
   },
   {
     name: "Jeans",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Denim Bottoms",
+    },
     price: 50,
     cost: 25,
     stock: 100,
@@ -127,7 +154,10 @@ export const sampleProducts = [
   },
   {
     name: "Microwave Oven",
-    category: "Home Appliances",
+    category: {
+      name: "Electronics",
+      description: "Home Appliance",
+    },
     price: 150,
     cost: 100,
     stock: 40,
@@ -141,7 +171,10 @@ export const sampleProducts = [
   },
   {
     name: "Washing Machine",
-    category: "Home Appliances",
+    category: {
+      name: "Electronics",
+      description: "Home Appliance",
+    },
     price: 500,
     cost: 400,
     stock: 30,
@@ -155,7 +188,10 @@ export const sampleProducts = [
   },
   {
     name: "Conditioner",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Hair Care Product",
+    },
     price: 15,
     cost: 8,
     stock: 70,
@@ -169,7 +205,10 @@ export const sampleProducts = [
   },
   {
     name: "Face Moisturizer",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Skin Hydration Product",
+    },
     price: 20,
     cost: 12,
     stock: 90,
@@ -183,7 +222,10 @@ export const sampleProducts = [
   },
   {
     name: "Camping Tent",
-    category: "Sports & Outdoors",
+    category: {
+      name: "Sports & Outdoors",
+      description: "Outdoor Shelter Equipment",
+    },
     price: 100,
     cost: 80,
     stock: 20,
@@ -197,7 +239,10 @@ export const sampleProducts = [
   },
   {
     name: "Hiking Backpack",
-    category: "Sports & Outdoors",
+    category: {
+      name: "Sports & Outdoors",
+      description: "Outdoor Gear Carrier",
+    },
     price: 80,
     cost: 60,
     stock: 40,
@@ -211,7 +256,10 @@ export const sampleProducts = [
   },
   {
     name: "Bluetooth Speaker",
-    category: "Electronics",
+    category: {
+      name: "Audio",
+      description: "Home Appliance",
+    },
     price: 80,
     cost: 50,
     stock: 70,
@@ -225,7 +273,10 @@ export const sampleProducts = [
   },
   {
     name: "Gaming Console",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Entertainment Device",
+    },
     price: 300,
     cost: 200,
     stock: 30,
@@ -239,7 +290,10 @@ export const sampleProducts = [
   },
   {
     name: "Sweater",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Warm Apparel Item",
+    },
     price: 40,
     cost: 20,
     stock: 60,
@@ -253,7 +307,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Coffee Maker",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Automated Brewing Device",
+    },
     price: 80,
     cost: 60,
     stock: 50,
@@ -267,7 +324,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Lip Balm",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Lip Care Product",
+    },
     price: 5,
     cost: 2,
     stock: 100,
@@ -281,7 +341,10 @@ export const sampleProducts = [
   },
   {
     name: "Portable Charger",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "On-the-Go Power Source",
+    },
     price: 40,
     cost: 25,
     stock: 80,
@@ -295,7 +358,10 @@ export const sampleProducts = [
   },
   {
     name: "Computer Monitor",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Display Device",
+    },
     price: 250,
     cost: 180,
     stock: 35,
@@ -309,7 +375,10 @@ export const sampleProducts = [
   },
   {
     name: "Tie",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Formal Neckwear",
+    },
     price: 25,
     cost: 10,
     stock: 70,
@@ -323,7 +392,10 @@ export const sampleProducts = [
   },
   {
     name: "Toaster Oven",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Compact Cooking Appliance",
+    },
     price: 60,
     cost: 40,
     stock: 45,
@@ -337,7 +409,10 @@ export const sampleProducts = [
   },
   {
     name: "Face Mask",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Skincare Product",
+    },
     price: 8,
     cost: 3,
     stock: 120,
@@ -351,7 +426,10 @@ export const sampleProducts = [
   },
   {
     name: "External Hard Drive",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Data Storage Device",
+    },
     price: 120,
     cost: 80,
     stock: 50,
@@ -365,7 +443,10 @@ export const sampleProducts = [
   },
   {
     name: "Wi-Fi Router",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Network Device",
+    },
     price: 70,
     cost: 50,
     stock: 40,
@@ -379,7 +460,10 @@ export const sampleProducts = [
   },
   {
     name: "Socks",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Comfortable, versatile, cozy",
+    },
     price: 10,
     cost: 5,
     stock: 100,
@@ -393,7 +477,10 @@ export const sampleProducts = [
   },
   {
     name: "Beanie",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Footwear Essentials",
+    },
     price: 15,
     cost: 8,
     stock: 80,
@@ -407,7 +494,10 @@ export const sampleProducts = [
   },
   {
     name: "Vacuum Cleaner",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Cleaning Equipment",
+    },
     price: 150,
     cost: 100,
     stock: 30,
@@ -421,7 +511,10 @@ export const sampleProducts = [
   },
   {
     name: "Perfume",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Fragrance Product",
+    },
     price: 50,
     cost: 30,
     stock: 50,
@@ -435,7 +528,10 @@ export const sampleProducts = [
   },
   {
     name: "Graphics Tablet",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Digital Art Device",
+    },
     price: 150,
     cost: 100,
     stock: 25,
@@ -449,7 +545,10 @@ export const sampleProducts = [
   },
   {
     name: "Power Bank",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Portable Charging Device",
+    },
     price: 30,
     cost: 20,
     stock: 60,
@@ -463,7 +562,10 @@ export const sampleProducts = [
   },
   {
     name: "Scarf",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Winter Neckwear",
+    },
     price: 20,
     cost: 10,
     stock: 90,
@@ -477,7 +579,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Fan",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Cooling Appliance",
+    },
     price: 40,
     cost: 25,
     stock: 40,
@@ -491,7 +596,10 @@ export const sampleProducts = [
   },
   {
     name: "Toothpaste",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Oral Hygiene Product",
+    },
     price: 3,
     cost: 1,
     stock: 120,
@@ -505,7 +613,10 @@ export const sampleProducts = [
   },
   {
     name: "Action Camera",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Adventure Recording Device",
+    },
     price: 180,
     cost: 120,
     stock: 35,
@@ -519,7 +630,10 @@ export const sampleProducts = [
   },
   {
     name: "Projector",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Display Device",
+    },
     price: 300,
     cost: 220,
     stock: 20,
@@ -533,7 +647,10 @@ export const sampleProducts = [
   },
   {
     name: "Dress",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Elegant Attire",
+    },
     price: 50,
     cost: 30,
     stock: 50,
@@ -547,7 +664,10 @@ export const sampleProducts = [
   },
   {
     name: "Air Purifier",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Air Cleaning Device",
+    },
     price: 200,
     cost: 150,
     stock: 25,
@@ -561,7 +681,10 @@ export const sampleProducts = [
   },
   {
     name: "Hair Dryer",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Hair Styling Tool",
+    },
     price: 40,
     cost: 25,
     stock: 60,
@@ -575,7 +698,10 @@ export const sampleProducts = [
   },
   {
     name: "Laptop Sleeve",
-    category: "Electronics",
+    category: {
+      name: "Accesories",
+      description: "Device Protection Cover",
+    },
     price: 25,
     cost: 15,
     stock: 50,
@@ -589,7 +715,10 @@ export const sampleProducts = [
   },
   {
     name: "USB Flash Drive",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Data Storage Device",
+    },
     price: 15,
     cost: 8,
     stock: 70,
@@ -603,7 +732,10 @@ export const sampleProducts = [
   },
   {
     name: "Belt",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Waist Accessory",
+    },
     price: 20,
     cost: 10,
     stock: 80,
@@ -617,7 +749,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Blanket",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Heating Bedding",
+    },
     price: 60,
     cost: 40,
     stock: 30,
@@ -631,7 +766,10 @@ export const sampleProducts = [
   },
   {
     name: "Facial Scrub",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Skin Exfoliation Product",
+    },
     price: 12,
     cost: 6,
     stock: 90,
@@ -645,7 +783,10 @@ export const sampleProducts = [
   },
   {
     name: "Wireless Mouse",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Cordless Pointer Device",
+    },
     price: 20,
     cost: 12,
     stock: 60,
@@ -659,7 +800,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Scale",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Health Monitoring Device",
+    },
     price: 40,
     cost: 25,
     stock: 50,
@@ -673,7 +817,10 @@ export const sampleProducts = [
   },
   {
     name: "Sun Hat",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Sun Protection Headwear",
+    },
     price: 15,
     cost: 8,
     stock: 70,
@@ -687,7 +834,10 @@ export const sampleProducts = [
   },
   {
     name: "Hand Mixer",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Food Preparation Tool",
+    },
     price: 30,
     cost: 20,
     stock: 40,
@@ -701,7 +851,10 @@ export const sampleProducts = [
   },
   {
     name: "Body Scrub",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Skin Exfoliating Product",
+    },
     price: 15,
     cost: 7,
     stock: 80,
@@ -715,7 +868,10 @@ export const sampleProducts = [
   },
   {
     name: "Wireless Keyboard",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Cordless Typing Device",
+    },
     price: 30,
     cost: 20,
     stock: 50,
@@ -729,7 +885,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Thermostat",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Temperature Control Device",
+    },
     price: 100,
     cost: 70,
     stock: 30,
@@ -743,7 +902,10 @@ export const sampleProducts = [
   },
   {
     name: "Duffle Bag",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Travel Luggage",
+    },
     price: 40,
     cost: 25,
     stock: 60,
@@ -757,7 +919,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Grill",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Indoor Grilling Appliance",
+    },
     price: 80,
     cost: 60,
     stock: 35,
@@ -771,7 +936,10 @@ export const sampleProducts = [
   },
   {
     name: "Hand Cream",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Skin Moisturizing Product",
+    },
     price: 10,
     cost: 5,
     stock: 90,
@@ -785,7 +953,10 @@ export const sampleProducts = [
   },
   {
     name: "Bluetooth Headphones",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Wireless Audio Device",
+    },
     price: 60,
     cost: 40,
     stock: 40,
@@ -799,7 +970,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Doorbell",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Home Security Device",
+    },
     price: 120,
     cost: 90,
     stock: 25,
@@ -813,7 +987,10 @@ export const sampleProducts = [
   },
   {
     name: "Swimsuit",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Beachwear",
+    },
     price: 30,
     cost: 15,
     stock: 50,
@@ -827,7 +1004,10 @@ export const sampleProducts = [
   },
   {
     name: "Air Fryer",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Cooking Appliance",
+    },
     price: 70,
     cost: 50,
     stock: 30,
@@ -841,7 +1021,10 @@ export const sampleProducts = [
   },
   {
     name: "Body Wash",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Cleansing Product",
+    },
     price: 8,
     cost: 4,
     stock: 70,
@@ -855,7 +1038,10 @@ export const sampleProducts = [
   },
   {
     name: "Tablet Stand",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Device Holder",
+    },
     price: 15,
     cost: 10,
     stock: 60,
@@ -869,7 +1055,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Toothbrush",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Oral Care Device",
+    },
     price: 40,
     cost: 25,
     stock: 30,
@@ -883,7 +1072,10 @@ export const sampleProducts = [
   },
   {
     name: "Hand Sanitizer",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Hygiene Product",
+    },
     price: 5,
     cost: 2,
     stock: 100,
@@ -897,7 +1089,10 @@ export const sampleProducts = [
   },
   {
     name: "USB-C Hub",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Peripheral Adapter",
+    },
     price: 40,
     cost: 25,
     stock: 45,
@@ -911,7 +1106,10 @@ export const sampleProducts = [
   },
   {
     name: "Wireless Presenter",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Presentation Remote",
+    },
     price: 30,
     cost: 20,
     stock: 55,
@@ -925,7 +1123,10 @@ export const sampleProducts = [
   },
   {
     name: "Rain Jacket",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Weatherproof Outerwear",
+    },
     price: 60,
     cost: 35,
     stock: 30,
@@ -939,7 +1140,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Tea Kettle",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Tea Brewing Appliance",
+    },
     price: 35,
     cost: 20,
     stock: 40,
@@ -953,7 +1157,10 @@ export const sampleProducts = [
   },
   {
     name: "Facial Cleansing Brush",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Gentle, exfoliating, cleansing",
+    },
     price: 25,
     cost: 15,
     stock: 50,
@@ -967,7 +1174,10 @@ export const sampleProducts = [
   },
   {
     name: "Portable Bluetooth Speaker",
-    category: "Electronics",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Skin Care Tool",
+    },
     price: 50,
     cost: 30,
     stock: 60,
@@ -981,7 +1191,10 @@ export const sampleProducts = [
   },
   {
     name: "Leather Jacket",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Classic, stylish, durable, versatile",
+    },
     price: 100,
     cost: 70,
     stock: 25,
@@ -995,7 +1208,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Rice Cooker",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Efficient, convenient, versatile, reliable",
+    },
     price: 70,
     cost: 50,
     stock: 35,
@@ -1009,7 +1225,10 @@ export const sampleProducts = [
   },
   {
     name: "Eye Cream",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Nourishing, rejuvenating, soothing, effective",
+    },
     price: 20,
     cost: 12,
     stock: 40,
@@ -1023,7 +1242,10 @@ export const sampleProducts = [
   },
   {
     name: "Wireless Charging Stand",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Convenient, efficient, wireless, sleek",
+    },
     price: 35,
     cost: 20,
     stock: 45,
@@ -1037,7 +1259,10 @@ export const sampleProducts = [
   },
   {
     name: "Portable Power Bank",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Convenient, portable, reliable, versatile",
+    },
     price: 25,
     cost: 15,
     stock: 50,
@@ -1051,7 +1276,10 @@ export const sampleProducts = [
   },
   {
     name: "Hoodie",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Comfortable, stylish, versatile, cozy",
+    },
     price: 45,
     cost: 25,
     stock: 55,
@@ -1065,7 +1293,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Pressure Cooker",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Efficient, versatile, time-saving, convenient",
+    },
     price: 80,
     cost: 60,
     stock: 30,
@@ -1079,7 +1310,10 @@ export const sampleProducts = [
   },
   {
     name: "Body Lotion",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Moisturizing, nourishing, rejuvenating, fragrant",
+    },
     price: 15,
     cost: 8,
     stock: 60,
@@ -1093,7 +1327,10 @@ export const sampleProducts = [
   },
   {
     name: "Wireless Earbuds",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Convenient, portable, wireless, immersive",
+    },
     price: 70,
     cost: 45,
     stock: 40,
@@ -1107,7 +1344,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Wi-Fi Plug",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Smart, Wi-Fi enabled, convenient, energy-saving",
+    },
     price: 20,
     cost: 15,
     stock: 60,
@@ -1121,7 +1361,10 @@ export const sampleProducts = [
   },
   {
     name: "Leather Jeans",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Stylish, durable, versatile",
+    },
     price: 50,
     cost: 30,
     stock: 35,
@@ -1135,7 +1378,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Blender",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Efficient, versatile, powerful",
+    },
     price: 40,
     cost: 25,
     stock: 50,
@@ -1149,7 +1395,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Hand Cream",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Moisturizing, nourishing, fragrant",
+    },
     price: 10,
     cost: 5,
     stock: 70,
@@ -1163,7 +1412,10 @@ export const sampleProducts = [
   },
   {
     name: "Compressor",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Powerful, efficient, reliable",
+    },
     price: 250,
     cost: 100,
     stock: 30,
@@ -1177,7 +1429,10 @@ export const sampleProducts = [
   },
   {
     name: "Wireless Keyboard and Mouse Combo",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Convenient, versatile, wireless",
+    },
     price: 40,
     cost: 25,
     stock: 50,
@@ -1191,7 +1446,10 @@ export const sampleProducts = [
   },
   {
     name: "Sweatpants",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Comfortable, casual, versatile",
+    },
     price: 30,
     cost: 20,
     stock: 60,
@@ -1205,7 +1463,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Microwave Oven",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Smart, efficient, versatile, convenient",
+    },
     price: 100,
     cost: 70,
     stock: 25,
@@ -1219,7 +1480,10 @@ export const sampleProducts = [
   },
   {
     name: "Facial Moisturizer",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Hydrating, nourishing, rejuvenating, refreshing",
+    },
     price: 15,
     cost: 8,
     stock: 50,
@@ -1233,7 +1497,10 @@ export const sampleProducts = [
   },
   {
     name: "Fitness Tracker",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Smart, activity monitoring, versatile, sleek",
+    },
     price: 80,
     cost: 50,
     stock: 40,
@@ -1247,7 +1514,10 @@ export const sampleProducts = [
   },
   {
     name: "Sunglasses",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Stylish, protective, versatile",
+    },
     price: 25,
     cost: 15,
     stock: 70,
@@ -1261,7 +1531,10 @@ export const sampleProducts = [
   },
   {
     name: "Coffee Maker",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Convenient, versatile, efficient",
+    },
     price: 50,
     cost: 30,
     stock: 45,
@@ -1275,7 +1548,10 @@ export const sampleProducts = [
   },
   {
     name: "Lip Balm",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Convenient, versatile, efficient",
+    },
     price: 5,
     cost: 2,
     stock: 80,
@@ -1289,7 +1565,10 @@ export const sampleProducts = [
   },
   {
     name: "Smart Home Security Camera",
-    category: "Electronics",
+    category: {
+      name: "Electronics",
+      description: "Smart, surveillance, reliable, versatile",
+    },
     price: 120,
     cost: 80,
     stock: 35,
@@ -1303,7 +1582,10 @@ export const sampleProducts = [
   },
   {
     name: "Leather Belt",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Stylish, durable, versatile",
+    },
     price: 40,
     cost: 25,
     stock: 55,
@@ -1317,7 +1599,10 @@ export const sampleProducts = [
   },
   {
     name: "Air Conditioner",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Cooling, efficient, versatile",
+    },
     price: 300,
     cost: 200,
     stock: 20,
@@ -1331,7 +1616,10 @@ export const sampleProducts = [
   },
   {
     name: "Sunscreen",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Protective, SPF, moisturizing",
+    },
     price: 15,
     cost: 8,
     stock: 70,
@@ -1345,7 +1633,10 @@ export const sampleProducts = [
   },
   {
     name: "Resistance Bands",
-    category: "Miscellaneous",
+    category: {
+      name: "Miscellaneous",
+      description: "Versatile, exercise, fitness",
+    },
     price: 20,
     cost: 10,
     stock: 50,
@@ -1359,7 +1650,10 @@ export const sampleProducts = [
   },
   {
     name: "Wireless Charging Dock",
-    category: "Electronics",
+    category: {
+      name: "Miscellaneous",
+      description: "Versatile, exercise, fitness",
+    },
     price: 50,
     cost: 30,
     stock: 40,
@@ -1373,7 +1667,10 @@ export const sampleProducts = [
   },
   {
     name: "Winter Scarf",
-    category: "Clothing",
+    category: {
+      name: "Clothing",
+      description: "Warm, cozy, stylish",
+    },
     price: 35,
     cost: 20,
     stock: 60,
@@ -1387,7 +1684,10 @@ export const sampleProducts = [
   },
   {
     name: "Electric Can Opener",
-    category: "Home Appliances",
+    category: {
+      name: "Home Appliances",
+      description: "Convenient, efficient, versatile",
+    },
     price: 20,
     cost: 15,
     stock: 45,
@@ -1401,7 +1701,10 @@ export const sampleProducts = [
   },
   {
     name: "Facial Toner",
-    category: "Beauty & Personal Care",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Refreshing, toning, rejuvenating",
+    },
     price: 25,
     cost: 12,
     stock: 70,
@@ -1415,7 +1718,10 @@ export const sampleProducts = [
   },
   {
     name: "Travel Adapter",
-    category: "Miscellaneous",
+    category: {
+      name: "Miscellaneous",
+      description: "Versatile, convenient, compact",
+    },
     price: 15,
     cost: 8,
     stock: 55,
@@ -1426,7 +1732,7 @@ export const sampleProducts = [
         email: "Thomas@eactive.com",
       },
     },
-  }  
+  },
 ];
 
 export const sampleOffers = [
@@ -1434,19 +1740,25 @@ export const sampleOffers = [
     products: ["Laptop", "Smartphone"],
     price: 1800,
     active: true,
-    category: ["Electronics"]
+    category: ["Electronics"],
   },
   {
     products: ["T-shirt", "Shampoo"],
     price: 30,
     active: true,
-    category: ["Clothing", "Beauty & Personal Care"]
+    category: ["Clothing", "Beauty & Personal Care"],
   },
   {
     products: ["Refrigerator", "Smartphone", "Soccer Ball"],
     price: 1830,
     active: false,
-    category: ["Home Appliances", "Electronics", "Sports & Outdoors"]
+    category: ["Home Appliances", "Electronics", "Sports & Outdoors"],
+  },
+  {
+    products: ["Wireless Mouse", "Travel Adapter", "Wireless Keyboard"],
+    price: 65,
+    active: true,
+    category: ["Electronics", "Miscellaneous"],
   },
 ];
 export const sampleSuppliers = [
@@ -1499,4 +1811,41 @@ export const sampleOrders = [
   },
 ];
 
-
+export const sampleCategories = [
+  {
+    name: "Electronics",
+    description: "Electronic description",
+  },
+  {
+    name: "Casual Apparel",
+    description: "Clothing description",
+  },
+  {
+    name: "Beauty & Personal Care",
+    description: "Beauty & personal care description",
+  },
+  {
+    name: "Sports & Outdoors",
+    description: "Sports & Outdoor description",
+  },
+  {
+    name: "Audio",
+    description: "Audio description",
+  },
+  {
+    name: "Clothing",
+    description: "Cloth item description",
+  },
+  {
+    name: "Home Appliance",
+    description: "Home Appliance description",
+  },
+  {
+    name: "Accesories",
+    description: "Accesories description",
+  },
+  {
+    name: "Miscellaneous",
+    description: "Miscellaneous description",
+  },
+];
