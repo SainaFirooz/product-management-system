@@ -163,10 +163,8 @@ export const orderForOffers = async () => {
   try {
     let currentOffers = await OfferModel.find({});
     const mappedOffers = currentOffers.map((offer, index) => {
-      return `${index + 1}: ${offer.products.join(" ")}`;
+      return `${index + 1}: ${offer.products.join(", ")}`;
     });
-    console.log(currentOffers);
-    console.log(mappedOffers);
     const { offer_choice } = await inquirer.prompt([
       {
         type: "list",
@@ -416,6 +414,40 @@ const findProfit = async (prompt_choice) => {
 };
 export const productsInStock = async () => {
   try {
+    const offersList = await OfferModel.aggregate([
+      {
+        $match: { price: { $gt: 0 } },
+      },
+    ]);
+    let offers_by_stock = {
+      notInStock: [],
+      partialStock: [],
+      fullStock: [],
+    };
+    for (const offer in offersList) {
+      let stockLength = 0;
+      for (const product in offer.products) {
+        const matchingProduct = await ProductModel.aggregate([
+          {
+            $match: { name: { $in: [product] } },
+          },
+        ]);
+        if (matchingProduct.stock > 0) {
+          stockLength++;
+        }
+      }
+      if (stockLength === offer.products.length) {
+        console.log("added to fullStock");
+        offers_by_stock.fullStock.push(offer);
+      } else if (stockLength > 0 && stockLength < offer.products.length) {
+        console.log("added to partialStock");
+        offers_by_stock.partialStock.push(offer);
+      } else {
+        console.log("added to notInStock");
+        offers_by_stock.notInStock.push(offer);
+      }
+    }
+    console.log(offersList);
     while (true) {
       const { menu_choice } = await inquirer.prompt([
         {
