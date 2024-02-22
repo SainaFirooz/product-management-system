@@ -106,9 +106,17 @@ export async function viewSuppliers() {
     //     console.log(`Supplier: ${supplier.name} \nContact info: ${supplier.contact.name} - ${supplier.contact.email}`);
     // })
 
-    const allSuppliers = await SupplierModel.find({}, 'name')
+    // const allSuppliers = await SupplierModel.find({}, 'name')
     // const supplierListName = allSuppliers.map(supplier => {
     //     console.log(supplier.name);
     // })
+    const suppliers = await SupplierModel.find({});
+
+    suppliers.forEach(supplier => {
+        console.log(`Name: ${supplier.name}`);
+        console.log(`Contact Person: ${supplier.contact.name}`);
+        console.log(`Email: ${supplier.contact.email}`);
+        console.log('---------------------------------');
+    })
     
 }
