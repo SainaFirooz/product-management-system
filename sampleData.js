@@ -1805,7 +1805,11 @@ export const sampleOrders = [
     status: "pending",
     additional_detail: "N/A",
     total_price: 1750,
-    total_cost: 1400
+    total_cost: 1400, 
+    date: {
+      type: Date,
+      default: Date.now
+    }
   },
   {
     offer: "T-shirt",
@@ -1813,7 +1817,11 @@ export const sampleOrders = [
     status: "pending",
     additional_detail: "N/A",
     total_price: 20,
-    total_cost: 10
+    total_cost: 10,
+    date: {
+      type: "date",
+      default: Date.now
+    }
   },
   {
     offer: ["Refrigerator", "Shampoo", "Soccer Ball"],
@@ -1821,7 +1829,11 @@ export const sampleOrders = [
     status: "pending",
     additional_detail: "N/A",
     total_price: 1250,
-    total_cost: 1025
+    total_cost: 1025,
+    date: {
+      type: Date,
+      default: Date.now
+    }
   },
   {
     offer: ["Smartwatch", "Smart Wireless Earbuds", "Jeans"],
@@ -1829,7 +1841,11 @@ export const sampleOrders = [
     status: "pending",
     additional_detail: "N/A",
     total_price: 300,
-    total_cost: 245
+    total_cost: 245,
+    date: {
+      type: Date,
+      default: Date.now
+    }
   }
 ];
 
