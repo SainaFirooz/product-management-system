@@ -277,109 +277,113 @@ export const addNewSupplier = async () => {
 };
 
 export const sumOfAllProfits = async () => {
-  let productListForPrompt = await ProductModel.aggregate([
-    {
-      $match: { price: { $gt: 0 } },
-    },
-    { $project: { _id: 0, name: 1 } },
-  ]);
-  while (true) {
-    const { first_selection } = await inquirer.prompt([
+  try {
+    let productListForPrompt = await ProductModel.aggregate([
       {
-        type: "list",
-        name: "first_selection",
-        message: "Show sum of profits from:",
-        choices: ["All sales", "Sales containing specific product", "Exit"],
+        $match: { price: { $gt: 0 } },
       },
+      { $project: { _id: 0, name: 1 } },
     ]);
-    switch (first_selection) {
-      case "All sales": {
-        let allSales = await SalesOrderModel.aggregate([
-          {
-            $match: {
-              total_cost: { $gt: 0 },
+    while (true) {
+      const { first_selection } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "first_selection",
+          message: "Show sum of profits from:",
+          choices: ["All sales", "Sales containing specific product", "Exit"],
+        },
+      ]);
+      switch (first_selection) {
+        case "All sales": {
+          let allSales = await SalesOrderModel.aggregate([
+            {
+              $match: {
+                total_cost: { $gt: 0 },
+              },
             },
-          },
-          {
-            $group: {
-              _id: null,
-              totalProfit: {
-                $sum: {
-                  $multiply: [
-                    { $subtract: ["$total_price", "$total_cost"] },
-                    0.7,
-                  ],
+            {
+              $group: {
+                _id: null,
+                totalProfit: {
+                  $sum: {
+                    $multiply: [
+                      { $subtract: ["$total_price", "$total_cost"] },
+                      0.7,
+                    ],
+                  },
                 },
+                sales: { $sum: 1 },
               },
-              sales: { $sum: 1 },
             },
-          },
-          {
-            $project: {
-              _id: 0,
-              totalProfit: 1,
-              sales: 1,
+            {
+              $project: {
+                _id: 0,
+                totalProfit: 1,
+                sales: 1,
+              },
             },
-          },
-        ]);
-        console.log(
-          `------------------------------\nno. Sales: ${allSales[0].sales}\nTotal profit: ${allSales[0].totalProfit}\n------------------------------`
-        );
+          ]);
+          console.log(
+            `------------------------------\nno. Sales: ${allSales[0].sales}\nTotal profit: ${allSales[0].totalProfit}\n------------------------------`
+          );
 
-        break;
-      }
-      case "Sales containing specific product": {
-        const { search_variant } = await inquirer.prompt([
-          {
-            type: "list",
-            name: "search_variant",
-            choices: ["Find from list", "Search for product", "Return"],
-          },
-        ]);
-        switch (search_variant) {
-          case "Find from list": {
-            const { product_choice } = await inquirer.prompt([
-              {
-                type: "list",
-                name: "product_choice",
-                message: "Please choose",
-                choices: [...productListForPrompt.map((x) => x.name).sort()],
-              },
-            ]);
-            await findProfit(product_choice);
-            break;
-          }
-          case "Search for product": {
-            const { product_choice } = await inquirer.prompt([
-              {
-                type: "input",
-                name: "product_choice",
-                message: "Enter product:",
-              },
-            ]);
-            if (
-              [...productListForPrompt.map((x) => x.name)].includes(
-                product_choice
-              )
-            ) {
+          break;
+        }
+        case "Sales containing specific product": {
+          const { search_variant } = await inquirer.prompt([
+            {
+              type: "list",
+              name: "search_variant",
+              choices: ["Find from list", "Search for product", "Return"],
+            },
+          ]);
+          switch (search_variant) {
+            case "Find from list": {
+              const { product_choice } = await inquirer.prompt([
+                {
+                  type: "list",
+                  name: "product_choice",
+                  message: "Please choose",
+                  choices: [...productListForPrompt.map((x) => x.name).sort()],
+                },
+              ]);
               await findProfit(product_choice);
-            } else {
-              console.log(
-                "------------------------------\nProduct not found\n------------------------------"
-              );
+              break;
+            }
+            case "Search for product": {
+              const { product_choice } = await inquirer.prompt([
+                {
+                  type: "input",
+                  name: "product_choice",
+                  message: "Enter product:",
+                },
+              ]);
+              if (
+                [...productListForPrompt.map((x) => x.name)].includes(
+                  product_choice
+                )
+              ) {
+                await findProfit(product_choice);
+              } else {
+                console.log(
+                  "------------------------------\nProduct not found\n------------------------------"
+                );
+                break;
+              }
+            }
+            case "Return": {
               break;
             }
           }
-          case "Return": {
-            break;
-          }
+          break;
         }
-        break;
-      }
-      case "Exit": {
-        return;
+        case "Exit": {
+          return;
+        }
       }
     }
+  } catch (error) {
+    console.log(error);
   }
 };
 const findProfit = async (prompt_choice) => {
@@ -411,20 +415,37 @@ const findProfit = async (prompt_choice) => {
   }
 };
 export const productsInStock = async () => {
-  while (true) {
-    const { menu_choice } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "menu_choice",
-        message: "Show:",
-        choices: [
-          "Offers with all products in stock",
-          "Offers with some products in stock",
-          "Offers with no products in stock",
-          "Exit",
-        ],
-      },
-    ]);
+  try {
+    while (true) {
+      const { menu_choice } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "menu_choice",
+          message: "Show:",
+          choices: [
+            "Offers with all products in stock",
+            "Offers with some products in stock",
+            "Offers with no products in stock",
+            "Exit",
+          ],
+        },
+      ]);
+      switch (menu_choice) {
+        case "Offers with all products in stock": {
+          break;
+        }
+        case "Offers with some products in stock": {
+          break;
+        }
+        case "Offers with no products in stock": {
+          break;
+        }
+        case "Exit": {
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 //AGGREGATE FRÅN OFFERS => ALL
