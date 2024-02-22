@@ -234,13 +234,12 @@ export async function shipOrders() {
           totalCost += product.price * orderToFetch.quantity;
         }
 
-        // Apply discount if quantity is 11 or more
+        
         if (orderToFetch.quantity >= 11) {
           totalCost *= 0.9; // reduce total cost by 10%
           console.log("A 10% discount has been applied to your order.");
         }
 
-        // Update order status and total cost
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
           { $or: [{ order: orderOrOffer }, { offer: orderOrOffer }] },
           { status: "shipped", total_cost: totalCost },
