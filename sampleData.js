@@ -1800,15 +1800,37 @@ export const sampleSuppliers = [
 ];
 export const sampleOrders = [
   {
-    offer: "Offer 1",
+    offer: ["Laptop", "Smartphone"],
     quantity: 2,
     status: "pending",
+    additional_detail: "N/A",
+    total_price: 1750,
+    total_cost: 1400
   },
   {
-    offer: "Offer 3",
+    offer: "T-shirt",
     quantity: 1,
     status: "pending",
+    additional_detail: "N/A",
+    total_price: 20,
+    total_cost: 10
   },
+  {
+    offer: ["Refrigerator", "Shampoo", "Soccer Ball"],
+    quantity: 3,
+    status: "pending",
+    additional_detail: "N/A",
+    total_price: 1250,
+    total_cost: 1025
+  },
+  {
+    offer: ["Smartwatch", "Smart Wireless Earbuds", "Jeans"],
+    quantity: 3,
+    status: "pending",
+    additional_detail: "N/A",
+    total_price: 300,
+    total_cost: 245
+  }
 ];
 
 export const sampleCategories = [
