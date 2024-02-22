@@ -291,14 +291,74 @@ export const sumOfAllProfits = async () => {
         let allSales = await SalesOrderModel.aggregate([
           {
             $match: {
-              totalCost: { $gt: 0 },
+              total_cost: { $gt: 0 },
             },
           },
-          { $group: { _id: null } },
+          {
+            $group: { _id: null },
+            totalProfit: {
+              $sum: {
+                $multiply: [
+                  { $subtract: ["$total_price", "$total_cost"] },
+                  0.7,
+                ],
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              totalProfit: 1,
+            },
+          },
         ]);
+        console.log(allSales.totalProfit);
+        break;
+      }
+      case "Sales containing specific product": {
+        const { search_variant } = await inquirer.prompt([
+          {
+            type: "list",
+            name: "search_variant",
+            choices: ["Find from list", "Search for product", "Exit"],
+          },
+        ]);
+        switch (search_variant) {
+          case "Find from list": {
+            let productListForPrompt = await ProductModel.aggregate([
+              {
+                $match: { price: { $gt: 0 } },
+              },
+              { $project: { _id: 0, name: 1 } },
+            ]);
+            console.log(productListForPrompt);
+            const { product_choice } = await inquirer.prompt([
+              {
+                type: "list",
+                name: "product_choice",
+                message: "Please choose",
+                choices: [...productListForPrompt.map((x) => x.name)],
+              },
+            ]);
+            console.log(product_choice);
+            break;
+          }
+          case "Search for product": {
+            break;
+          }
+          case "Exit": {
+            break;
+          }
+        }
       }
     }
   }
 };
-
+const findProfit = async (prompt_choice) => {
+  let productSales = SalesOrderModel.aggregate([
+    {
+      $match: { products: { $in: [product_choice] } },
+    },
+  ]);
+};
 export const productsInStock = async () => {};

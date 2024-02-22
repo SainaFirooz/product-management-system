@@ -208,13 +208,15 @@ export async function shipOrders() {
       });
 
       if (orderToFetch) {
-        const products = orderOrOffer.split(' ');
+        const products = orderOrOffer.split(" ");
 
         let totalPrice = 0;
         let totalCost = 0;
 
         for (const productName of products) {
-          let product = await ProductModel.findOne({ name: productName.trim() });
+          let product = await ProductModel.findOne({
+            name: productName.trim(),
+          });
 
           if (!product) {
             console.log(`Product ${productName} not found`);
@@ -222,7 +224,7 @@ export async function shipOrders() {
           }
 
           if (product.stock < orderToFetch.quantity) {
-            console.log('Not enough stock to complete the order');
+            console.log("Not enough stock to complete the order");
             return;
           }
 
@@ -236,7 +238,7 @@ export async function shipOrders() {
         }
 
         if (orderToFetch.quantity >= 11) {
-          totalPrice *= 0.9; 
+          totalPrice *= 0.9;
           console.log("A 10% discount has been applied to your order.");
         }
 
