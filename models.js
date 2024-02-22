@@ -49,6 +49,10 @@ const SalesOrdersSchema = mongoose.Schema({
   total_cost: {
     type: Number,
   },
+  date: {
+    date: {type: String},
+    default: {type: String}
+  }
 });
 
 export const CategoryModel = mongoose.model("Category", CategorySchema);
