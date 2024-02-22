@@ -155,14 +155,14 @@ export async function orderForProducts() {
       ]);
 
       const newOrder = new SalesOrderModel({
-        order: product,
+        offer: product,
         quantity: quantity,
         status: status,
         additional_detail: additionalDetails,
       });
 
       await newOrder.save();
-      console.log(`Order for ${newOrder.order} has been created with the following details:
+      console.log(`Order for ${newOrder.offer} has been created with the following details:
       Quantity: ${newOrder.quantity}
       Status: ${newOrder.status}
       Additional Detail: ${newOrder.additional_detail}
@@ -177,25 +177,25 @@ export async function orderForProducts() {
 
 export async function shipOrders() {
   try {
-    const allOrders = await SalesOrderModel.find({ status: "pending" });
+    const getPendingOrderChoices = async () => {
+      const allOrders = await SalesOrderModel.find({ status: "pending" });
+      let choices = [];
+      allOrders.forEach((order) => {
+        if (order.offer && order.offer.length > 0) {
+          choices = choices.concat(order.offer);
+        }
+      });
+      choices.push("Exit");
+      return choices;
+    };
 
-    let choices = [];
-
-    allOrders.forEach((order) => {
-      if (order.order) {
-        choices.push(order.order);
-      } else if (order.offer) {
-        choices.push(order.offer);
-      }
-    });
-
-    choices.push("Exit");
+    let choices = await getPendingOrderChoices();
 
     const { orderOrOffer } = await inquirer.prompt([
       {
         type: "list",
         name: "orderOrOffer",
-        message: "Choose an order to ship: ",
+        message: "Choose an offer to ship: ",
         choices: choices,
       },
     ]);
@@ -204,11 +204,11 @@ export async function shipOrders() {
       return;
     } else {
       const orderToFetch = await SalesOrderModel.findOne({
-        $or: [{ order: orderOrOffer }, { offer: orderOrOffer }],
+        offer: orderOrOffer,
       });
 
       if (orderToFetch) {
-        const products = orderOrOffer.split(' ');
+        const products = orderOrOffer.split(', ');
 
         let totalPrice = 0;
         let totalCost = 0;
@@ -226,9 +226,9 @@ export async function shipOrders() {
             return;
           }
 
-          console.log(`Stock before sale for ${productName}: ${product.stock}`);
+          console.log(`\n---------------------------------------------\nStock before sale for ${productName}: ${product.stock}`);
           product.stock -= orderToFetch.quantity;
-          console.log(`Stock after sale for ${productName}: ${product.stock}`);
+          console.log(`Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------`);
           await product.save();
 
           totalPrice += product.price * orderToFetch.quantity;
@@ -237,31 +237,38 @@ export async function shipOrders() {
 
         if (orderToFetch.quantity >= 11) {
           totalPrice *= 0.9; 
-          console.log("A 10% discount has been applied to your order.");
+          console.log("\nA 10% discount has been applied to your order.\n---------------------------------------------");
         }
 
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
-          { $or: [{ order: orderOrOffer }, { offer: orderOrOffer }] },
+          { _id: orderToFetch._id },
           { status: "shipped", total_price: totalPrice, total_cost: totalCost },
           { new: true }
         ).exec();
 
-        console.log(`Updated Order Details:
+        console.log(`\nUpdated Order Details:\n
         ID: ${orderToShip._id}
-        Product: ${orderToShip.order || orderToShip.offer}
+        PRoducts: ${orderToShip.offer.join(', ')}
         Quantity: ${orderToShip.quantity}
         Status: ${orderToShip.status} (updated)
         Additional Details: ${orderToShip.additional_detail}
-        Total Price: ${orderToShip.total_price}
-        Total Cost: ${orderToShip.total_cost}
-         `);
+        Total Price: $${orderToShip.total_price}
+        Total Cost: $${orderToShip.total_cost}
+        \n---------------------------------------------`);
         console.log(
           "Order has been shipped successfully!\nIt will be delivered within 7 business days\n---------------------------------------------"
         );
       } else {
-        console.log("No order or offer found with the provided name");
+        console.log("No offer found with the provided name");
       }
     }
+
+    // After shipping an order, get the updated list of pending orders
+    choices = await getPendingOrderChoices();
+
+    // Show the prompt to the user again with the updated choices
+    // ...
+
   } catch (error) {
     console.log(error);
   }
