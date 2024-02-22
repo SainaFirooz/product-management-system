@@ -46,6 +46,9 @@ const SalesOrdersSchema = mongoose.Schema({
   additional_detail: {
     type: String,
   },
+  total_cost: {
+    type: Number,
+  },
 });
 
 export const CategoryModel = mongoose.model("Category", CategorySchema);
