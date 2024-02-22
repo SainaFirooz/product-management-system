@@ -288,7 +288,17 @@ export const sumOfAllProfits = async () => {
     ]);
     switch (first_selection) {
       case "All sales": {
+        let allSales = await SalesOrderModel.aggregate([
+          {
+            $match: {
+              totalCost: { $gt: 0 },
+            },
+          },
+          { $group: { _id: null } },
+        ]);
       }
     }
   }
 };
+
+export const productsInStock = async () => {};
