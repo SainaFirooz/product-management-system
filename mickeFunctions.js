@@ -277,6 +277,12 @@ export const addNewSupplier = async () => {
 };
 
 export const sumOfAllProfits = async () => {
+  let productListForPrompt = await ProductModel.aggregate([
+    {
+      $match: { price: { $gt: 0 } },
+    },
+    { $project: { _id: 0, name: 1 } },
+  ]);
   while (true) {
     const { first_selection } = await inquirer.prompt([
       {
@@ -295,24 +301,31 @@ export const sumOfAllProfits = async () => {
             },
           },
           {
-            $group: { _id: null },
-            totalProfit: {
-              $sum: {
-                $multiply: [
-                  { $subtract: ["$total_price", "$total_cost"] },
-                  0.7,
-                ],
+            $group: {
+              _id: null,
+              totalProfit: {
+                $sum: {
+                  $multiply: [
+                    { $subtract: ["$total_price", "$total_cost"] },
+                    0.7,
+                  ],
+                },
               },
+              sales: { $sum: 1 },
             },
           },
           {
             $project: {
               _id: 0,
               totalProfit: 1,
+              sales: 1,
             },
           },
         ]);
-        console.log(allSales.totalProfit);
+        console.log(
+          `------------------------------\nno. Sales: ${allSales[0].sales}\nTotal profit: ${allSales[0].totalProfit}\n------------------------------`
+        );
+
         break;
       }
       case "Sales containing specific product": {
@@ -320,45 +333,104 @@ export const sumOfAllProfits = async () => {
           {
             type: "list",
             name: "search_variant",
-            choices: ["Find from list", "Search for product", "Exit"],
+            choices: ["Find from list", "Search for product", "Return"],
           },
         ]);
         switch (search_variant) {
           case "Find from list": {
-            let productListForPrompt = await ProductModel.aggregate([
-              {
-                $match: { price: { $gt: 0 } },
-              },
-              { $project: { _id: 0, name: 1 } },
-            ]);
-            console.log(productListForPrompt);
             const { product_choice } = await inquirer.prompt([
               {
                 type: "list",
                 name: "product_choice",
                 message: "Please choose",
-                choices: [...productListForPrompt.map((x) => x.name)],
+                choices: [...productListForPrompt.map((x) => x.name).sort()],
               },
             ]);
-            console.log(product_choice);
+            await findProfit(product_choice);
             break;
           }
           case "Search for product": {
-            break;
+            const { product_choice } = await inquirer.prompt([
+              {
+                type: "input",
+                name: "product_choice",
+                message: "Enter product:",
+              },
+            ]);
+            if (
+              [...productListForPrompt.map((x) => x.name)].includes(
+                product_choice
+              )
+            ) {
+              await findProfit(product_choice);
+            } else {
+              console.log(
+                "------------------------------\nProduct not found\n------------------------------"
+              );
+              break;
+            }
           }
-          case "Exit": {
+          case "Return": {
             break;
           }
         }
+        break;
+      }
+      case "Exit": {
+        return;
       }
     }
   }
 };
 const findProfit = async (prompt_choice) => {
-  let productSales = SalesOrderModel.aggregate([
+  let productSales = await SalesOrderModel.aggregate([
     {
-      $match: { products: { $in: [product_choice] } },
+      $match: { offer: { $in: [prompt_choice] } },
+    },
+    {
+      $group: {
+        _id: null,
+        totalProfit: {
+          $sum: {
+            $multiply: [{ $subtract: ["$total_price", "$total_cost"] }, 0.7],
+          },
+        },
+        sales: { $sum: 1 },
+      },
+    },
+    {
+      $project: { _id: 0, totalProfit: 1, sales: 1 },
     },
   ]);
+  if (productSales[0]) {
+    let roundedProfit = Math.round(productSales[0].totalProfit * 100);
+    roundedProfit = roundedProfit / 100;
+    console.log(
+      `\n------------------------------\nProduct: ${prompt_choice}\nno. Sales: ${productSales[0].sales}\nTotal profit: ${roundedProfit}\n------------------------------`
+    );
+  }
 };
-export const productsInStock = async () => {};
+export const productsInStock = async () => {
+  while (true) {
+    const { menu_choice } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "menu_choice",
+        message: "Show:",
+        choices: [
+          "Offers with all products in stock",
+          "Offers with some products in stock",
+          "Offers with no products in stock",
+          "Exit",
+        ],
+      },
+    ]);
+  }
+};
+//AGGREGATE FRÅN OFFERS => ALL
+//LOOPA IGENOM CHECKA VIA AGGREGATE FRÅN PRODUCTS OM PRODUCTEN HAR STOCK > 0
+//(AGGREGGATE FRÅN PRODUCTS => stock)
+// LISTA COUNT OF OFFERS
+//1 ALL PRODUCTS IN STOCK
+//2 SOME PRODUCTS IN STOCK
+//3 NO PRODUCTS IN STOCK
