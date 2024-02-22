@@ -207,36 +207,43 @@ export async function shipOrders() {
         $or: [{ order: orderOrOffer }, { offer: orderOrOffer }],
       });
 
-      let product; 
-
       if (orderToFetch) {
-        product = await ProductModel.findOne({ name: orderOrOffer });
+        const products = orderOrOffer.split(' ');
 
-        if (!product) {
-          console.log('Product not found');
-          return;
+        let totalCost = 0;
+
+        // Update stock for each product
+        for (const productName of products) {
+          let product = await ProductModel.findOne({ name: productName.trim() });
+
+          if (!product) {
+            console.log(`Product ${productName} not found`);
+            continue;
+          }
+
+          if (product.stock < orderToFetch.quantity) {
+            console.log('Not enough stock to complete the order');
+            return;
+          }
+
+          console.log(`Stock before sale for ${productName}: ${product.stock}`);
+          product.stock -= orderToFetch.quantity;
+          console.log(`Stock after sale for ${productName}: ${product.stock}`);
+          await product.save();
+
+          totalCost += product.price * orderToFetch.quantity;
         }
 
-        
-        let totalCost = product.price * orderToFetch.quantity;
-
-        console.log(`Order Details:
-        ID: ${orderToFetch._id}
-        Product: ${orderToFetch.order || orderToFetch.offer}
-        Quantity: ${orderToFetch.quantity}
-        Status: ${orderToFetch.status}
-        Additional Details: ${orderToFetch.additional_detail}
-        Total Cost: ${totalCost}
-`);
-
-        if (product.stock < orderToFetch.quantity) {
-          console.log('Not enough stock to complete the order');
-          return;
+        // Apply discount if quantity is 11 or more
+        if (orderToFetch.quantity >= 11) {
+          totalCost *= 0.9; // reduce total cost by 10%
+          console.log("A 10% discount has been applied to your order.");
         }
 
+        // Update order status and total cost
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
           { $or: [{ order: orderOrOffer }, { offer: orderOrOffer }] },
-          { status: "shipped" },
+          { status: "shipped", total_cost: totalCost },
           { new: true }
         ).exec();
 
@@ -246,15 +253,11 @@ export async function shipOrders() {
         Quantity: ${orderToShip.quantity}
         Status: ${orderToShip.status} (updated)
         Additional Details: ${orderToShip.additional_detail}
+        Total Cost: ${orderToShip.total_cost}
          `);
         console.log(
           "Order has been shipped successfully!\nIt will be delivered within 7 business days\n---------------------------------------------"
         );
-
-        console.log(`Stock before sale: ${product.stock}`);
-        product.stock -= orderToShip.quantity;
-        console.log(`Stock after sale: ${product.stock}`);
-        await product.save();
       } else {
         console.log("No order or offer found with the provided name");
       }
