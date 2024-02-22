@@ -46,6 +46,9 @@ const SalesOrdersSchema = mongoose.Schema({
   additional_detail: {
     type: String,
   },
+  total_price: {
+    type: Number,
+  },
   total_cost: {
     type: Number,
   },
