@@ -210,9 +210,9 @@ export async function shipOrders() {
       if (orderToFetch) {
         const products = orderOrOffer.split(' ');
 
+        let totalPrice = 0;
         let totalCost = 0;
 
-        // Update stock for each product
         for (const productName of products) {
           let product = await ProductModel.findOne({ name: productName.trim() });
 
@@ -231,19 +231,18 @@ export async function shipOrders() {
           console.log(`Stock after sale for ${productName}: ${product.stock}`);
           await product.save();
 
-          totalCost += product.price * orderToFetch.quantity;
+          totalPrice += product.price * orderToFetch.quantity;
+          totalCost += product.cost * orderToFetch.quantity;
         }
 
-        // Apply discount if quantity is 11 or more
         if (orderToFetch.quantity >= 11) {
-          totalCost *= 0.9; // reduce total cost by 10%
+          totalPrice *= 0.9; 
           console.log("A 10% discount has been applied to your order.");
         }
 
-        // Update order status and total cost
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
           { $or: [{ order: orderOrOffer }, { offer: orderOrOffer }] },
-          { status: "shipped", total_cost: totalCost },
+          { status: "shipped", total_price: totalPrice, total_cost: totalCost },
           { new: true }
         ).exec();
 
@@ -253,6 +252,7 @@ export async function shipOrders() {
         Quantity: ${orderToShip.quantity}
         Status: ${orderToShip.status} (updated)
         Additional Details: ${orderToShip.additional_detail}
+        Total Price: ${orderToShip.total_price}
         Total Cost: ${orderToShip.total_cost}
          `);
         console.log(
