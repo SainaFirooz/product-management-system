@@ -427,46 +427,22 @@ export const productsInStock = async () => {
     let o = offersList;
     for (let o_index = 0; o_index < o.length; o_index++) {
       let stockLength = 0;
-      console.log(
-        "OFFER:------------------------------------------------- " +
-          (o_index + 1)
-      );
       for (let i = 0; i < o[o_index].products.length; i++) {
-        console.log("product: " + (i + 1));
-        const matching = await ProductModel.aggregate([
+        const matchingProduct = await ProductModel.aggregate([
           {
             $match: { name: { $in: [o[o_index].products[i]] } },
           },
         ]);
+        matchingProduct[0].stock > 0 && stockLength++;
+      }
+      if (stockLength === o[o_index].products.length) {
+        offers_by_stock.fullStock.push(o[o_index]);
+      } else if (stockLength > 0) {
+        offers_by_stock.partialStock.push(o[o_index].products.length);
+      } else {
+        offers_by_stock.notInStock.push(o[o_index].products.length);
       }
     }
-    // for (const offer in offersList) {
-    //   let stockLength = 0;
-    //   for (const product in offer.products) {
-    //     console.log("hej");
-    //     const matchingProduct = await ProductModel.aggregate([
-    //       {
-    //         $match: { name: { $in: [product] } },
-    //       },
-    //     ]);
-    //     if (matchingProduct.stock > 0) {
-    //       stockLength++;
-    //     }
-    //     console.log(stockLength);
-    //     console.log(matchingProduct);
-    //   }
-    // if (stockLength === offer.products.length) {
-    //   console.log("added to fullStock");
-    //   offers_by_stock.fullStock.push(offer);
-    // } else if (stockLength > 0 && stockLength < offer.products.length) {
-    //   console.log("added to partialStock");
-    //   offers_by_stock.partialStock.push(offer);
-    // } else {
-    //   console.log("added to notInStock");
-    //   offers_by_stock.notInStock.push(offer);
-    // }
-    // }
-
     while (true) {
       const { menu_choice } = await inquirer.prompt([
         {
@@ -483,6 +459,9 @@ export const productsInStock = async () => {
       ]);
       switch (menu_choice) {
         case "Offers with all products in stock": {
+          let fullOffers = offers_by_stock.fullStock.forEach(
+            (offer, index) => {}
+          );
           break;
         }
         case "Offers with some products in stock": {
