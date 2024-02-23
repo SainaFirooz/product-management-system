@@ -163,10 +163,8 @@ export const orderForOffers = async () => {
   try {
     let currentOffers = await OfferModel.find({});
     const mappedOffers = currentOffers.map((offer, index) => {
-      return `${index + 1}: ${offer.products.join(" ")}`;
+      return `${index + 1}: ${offer.products.join(", ")}`;
     });
-    console.log(currentOffers);
-    console.log(mappedOffers);
     const { offer_choice } = await inquirer.prompt([
       {
         type: "list",
@@ -277,62 +275,219 @@ export const addNewSupplier = async () => {
 };
 
 export const sumOfAllProfits = async () => {
-  const allProducts = await ProductModel.aggregate([
+  try {
+    let productListForPrompt = await ProductModel.aggregate([
+      {
+        $match: { price: { $gt: 0 } },
+      },
+      { $project: { _id: 0, name: 1 } },
+    ]);
+    while (true) {
+      const { first_selection } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "first_selection",
+          message: "Show sum of profits from:",
+          choices: ["All sales", "Sales containing specific product", "Exit"],
+        },
+      ]);
+      switch (first_selection) {
+        case "All sales": {
+          let allSales = await SalesOrderModel.aggregate([
+            {
+              $match: {
+                total_cost: { $gt: 0 },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalProfit: {
+                  $sum: {
+                    $multiply: [
+                      { $subtract: ["$total_price", "$total_cost"] },
+                      0.7,
+                    ],
+                  },
+                },
+                sales: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                totalProfit: 1,
+                sales: 1,
+              },
+            },
+          ]);
+          console.log(
+            `------------------------------\nno. Sales: ${allSales[0].sales}\nTotal profit: ${allSales[0].totalProfit}\n------------------------------`
+          );
+
+          break;
+        }
+        case "Sales containing specific product": {
+          const { search_variant } = await inquirer.prompt([
+            {
+              type: "list",
+              name: "search_variant",
+              choices: ["Find from list", "Search for product", "Return"],
+            },
+          ]);
+          switch (search_variant) {
+            case "Find from list": {
+              const { product_choice } = await inquirer.prompt([
+                {
+                  type: "list",
+                  name: "product_choice",
+                  message: "Please choose",
+                  choices: [...productListForPrompt.map((x) => x.name).sort()],
+                },
+              ]);
+              await findProfit(product_choice);
+              break;
+            }
+            case "Search for product": {
+              const { product_choice } = await inquirer.prompt([
+                {
+                  type: "input",
+                  name: "product_choice",
+                  message: "Enter product:",
+                },
+              ]);
+              if (
+                [...productListForPrompt.map((x) => x.name)].includes(
+                  product_choice
+                )
+              ) {
+                await findProfit(product_choice);
+              } else {
+                console.log(
+                  "------------------------------\nProduct not found\n------------------------------"
+                );
+                break;
+              }
+            }
+            case "Return": {
+              break;
+            }
+          }
+          break;
+        }
+        case "Exit": {
+          return;
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+const findProfit = async (prompt_choice) => {
+  let productSales = await SalesOrderModel.aggregate([
     {
-      $match: { price: { $gt: 0 } },
-    },
-  ]);
-  const sumOfAll = await ProductModel.aggregate([
-    {
-      $match: { price: { $gt: 0 } },
+      $match: { offer: { $in: [prompt_choice] } },
     },
     {
       $group: {
         _id: null,
-        profit: {
-          $sum: { $multiply: [{ $subtract: ["$price", "$cost"] }, 0.7] },
+        totalProfit: {
+          $sum: {
+            $multiply: [{ $subtract: ["$total_price", "$total_cost"] }, 0.7],
+          },
         },
+        sales: { $sum: 1 },
       },
     },
-    { $project: { _id: 0, profit: 1 } },
-  ]);
-  console.log(sumOfAll);
-
-  const { product } = await inquirer.prompt([
     {
-      type: "list",
-      name: "product",
-      message: "Find profit of:",
-      choices: [...allProducts.map((x) => x.name).sort(), "Exit"],
+      $project: { _id: 0, totalProfit: 1, sales: 1 },
     },
   ]);
-  if (product != "Exit") {
-    let matchingOffers = await OfferModel.aggregate([
-      {
-        $match: {
-          products: { $in: [product] },
-        },
-      },
-      { $project: { _id: 0, price: 1, products: 1 } },
-    ]);
-    console.log(matchingOffers);
-    if (matchingOffers.length > 0) {
-      console.log("MATCHING OFFERS: ", matchingOffers);
-      matchingOffers.forEach(async (offer, index) => {
-        let productCost = await ProductModel.aggregate([
-          {
-            $match: { name: offer.products[index] },
-          },
-          {
-            $group: {
-              _id: null,
-              totalPrice: { $sum: "$cost" },
-            },
-          },
-          { $project: { _id: 0, totalPrice: 1 } },
-        ]);
-        console.log("PRODUCT COST: ", productCost);
-      });
-    }
+  if (productSales[0]) {
+    let roundedProfit = Math.round(productSales[0].totalProfit * 100);
+    roundedProfit = roundedProfit / 100;
+    console.log(
+      `\n------------------------------\nProduct: ${prompt_choice}\nno. Sales: ${productSales[0].sales}\nTotal profit: ${roundedProfit}\n------------------------------`
+    );
   }
 };
+export const productsInStock = async () => {
+  try {
+    const offersList = await OfferModel.aggregate([
+      {
+        $match: { price: { $gt: 0 } },
+      },
+    ]);
+    let offers_by_stock = {
+      notInStock: [],
+      partialStock: [],
+      fullStock: [],
+    };
+    let o = offersList;
+    for (let o_index = 0; o_index < o.length; o_index++) {
+      let stockLength = 0;
+      for (let i = 0; i < o[o_index].products.length; i++) {
+        const matchingProduct = await ProductModel.aggregate([
+          {
+            $match: { name: { $in: [o[o_index].products[i]] } },
+          },
+        ]);
+        matchingProduct[0].stock > 0 && stockLength++;
+      }
+      if (stockLength === o[o_index].products.length) {
+        offers_by_stock.fullStock.push(o[o_index]);
+      } else if (stockLength > 0) {
+        offers_by_stock.partialStock.push(o[o_index].products.length);
+      } else {
+        offers_by_stock.notInStock.push(o[o_index].products.length);
+      }
+    }
+    while (true) {
+      const { menu_choice } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "menu_choice",
+          message: "Show:",
+          choices: [
+            "Offers with all products in stock",
+            "Offers with some products in stock",
+            "Offers with no products in stock",
+            "Exit",
+          ],
+        },
+      ]);
+      switch (menu_choice) {
+        case "Offers with all products in stock": {
+          let fullOffers = offers_by_stock.fullStock.forEach((offer, index) => {
+            console.log(
+              `Offer 1${index}\nProducts: ${offer.products.join(
+                " "
+              )}\nPrice: $${offer.price}\nActive: ${
+                offer.active ? "Yes" : "No"
+              }\n---------------------------------------------`
+            );
+          });
+          break;
+        }
+        case "Offers with some products in stock": {
+          break;
+        }
+        case "Offers with no products in stock": {
+          break;
+        }
+        case "Exit": {
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+//AGGREGATE FRÅN OFFERS => ALL
+//LOOPA IGENOM CHECKA VIA AGGREGATE FRÅN PRODUCTS OM PRODUCTEN HAR STOCK > 0
+//(AGGREGGATE FRÅN PRODUCTS => stock)
+// LISTA COUNT OF OFFERS
+//1 ALL PRODUCTS IN STOCK
+//2 SOME PRODUCTS IN STOCK
+//3 NO PRODUCTS IN STOCK

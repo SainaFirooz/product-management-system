@@ -34,13 +34,13 @@ export async function viewAllOffers() {
         },
       },
     ]);
-    console.log('---------------------------------------------\nAll offers within a price range:\n');
+    console.log(
+      "---------------------------------------------\nAll offers within a price range:\n"
+    );
 
     filteredOffers.forEach((offer, index) => {
       console.log(
-        `Offer ${
-          index + 1
-        }:\nProducts: ${offer.products.join(", ")}\nPrice: $${
+        `Offer ${index + 1}:\nProducts: ${offer.products.join(", ")}\nPrice: $${
           offer.price
         }\nActive: ${
           offer.active ? "Yes" : "No"
@@ -205,17 +205,22 @@ export async function shipOrders() {
       return;
     } else {
       const orderToFetch = await SalesOrderModel.findOne({
-        offer: { $all: orderOrOffer.split(', '), $size: orderOrOffer.split(', ').length },
+        offer: {
+          $all: orderOrOffer.split(", "),
+          $size: orderOrOffer.split(", ").length,
+        },
       });
 
       if (orderToFetch) {
-        const products = orderOrOffer.split(', ');
+        const products = orderOrOffer.split(", ");
 
         let totalPrice = 0;
         let totalCost = 0;
 
         for (const productName of products) {
-          let product = await ProductModel.findOne({ name: productName.trim() });
+          let product = await ProductModel.findOne({
+            name: productName.trim(),
+          });
 
           if (!product) {
             console.log(`Product ${productName} not found`);
@@ -223,13 +228,17 @@ export async function shipOrders() {
           }
 
           if (product.stock < orderToFetch.quantity) {
-            console.log('Not enough stock to complete the order');
+            console.log("Not enough stock to complete the order");
             return;
           }
 
-          console.log(`\n---------------------------------------------\nStock before sale for ${productName}: ${product.stock}`);
+          console.log(
+            `\n---------------------------------------------\nStock before sale for ${productName}: ${product.stock}`
+          );
           product.stock -= orderToFetch.quantity;
-          console.log(`Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------`);
+          console.log(
+            `Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------`
+          );
           await product.save();
 
           totalPrice += product.price * orderToFetch.quantity;
@@ -237,24 +246,26 @@ export async function shipOrders() {
         }
 
         if (orderToFetch.quantity >= 11) {
-          totalPrice *= 0.9; 
-          console.log("\nA 10% discount has been applied to your order.\n---------------------------------------------");
+          totalPrice *= 0.9;
+          console.log(
+            "\nA 10% discount has been applied to your order.\n---------------------------------------------"
+          );
         }
 
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
           { _id: orderToFetch._id },
-          { 
-            status: "shipped", 
-            total_price: totalPrice, 
+          {
+            status: "shipped",
+            total_price: totalPrice,
             total_cost: totalCost,
-            date: new Date() 
+            date: new Date(),
           },
           { new: true }
         ).exec();
 
         console.log(`\nUpdated Order Details:\n
         ID: ${orderToShip._id}
-        Order: ${orderToShip.offer.join(', ')}
+        Order: ${orderToShip.offer.join(", ")}
         Quantity: ${orderToShip.quantity}
         Status: ${orderToShip.status} (updated)
         Additional Details: ${orderToShip.additional_detail}
@@ -269,10 +280,8 @@ export async function shipOrders() {
         console.log("No offer found with the provided name");
       }
     }
-    
+
     choices = await getPendingOrderChoices();
-
-
   } catch (error) {
     console.log(error);
   }
@@ -287,10 +296,10 @@ export async function viewAllSales() {
     if (allSales.length === 0) {
       console.log("No sales found");
       return;
-    } else {  
+    } else {
       allSales.forEach((sale, index) => {
         console.log(`Sale ${index + 1}:\n
-        Order: ${sale.offer.join(', ')}
+        Order: ${sale.offer.join(", ")}
         Quantity: ${sale.quantity}
         Status: ${sale.status}
         Additional Details: ${sale.additional_detail}
