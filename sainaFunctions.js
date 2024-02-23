@@ -170,30 +170,22 @@ export async function shipOrders() {
       let choices = [];
       allOrders.forEach((order) => {
         if (order.offer && order.offer.length > 0) {
-          choices = choices.concat(order.offer);
+          choices.push(order.offer.join(', '));
         }
       });
       choices.push("Exit");
       return choices;
     };
 
-    let choices = await getPendingOrderChoices();
-
-    const { orderOrOffer } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "orderOrOffer",
-        message: "Choose an offer to ship: ",
-        choices: choices,
-      },
-    ]);
-
-    if (orderOrOffer === "Exit") {
-      return;
-    } else {
-      const orderToFetch = await SalesOrderModel.findOne({
-        offer: { $all: orderOrOffer.split(', '), $size: orderOrOffer.split(', ').length },
-      });
+    const shipOrder = async (orderOrOffer) => {
+      const products = orderOrOffer.split(', ');
+    
+      const orders = await SalesOrderModel.aggregate([
+        { $unwind: "$offer" },
+        { $match: { "offer": { $in: products }, "status": "pending" } }
+      ]);
+    
+      const orderToFetch = orders.length > 0 ? orders[0] : null;
 
       if (orderToFetch) {
         const products = orderOrOffer.split(', ');
@@ -223,7 +215,7 @@ export async function shipOrders() {
           totalCost += product.cost * orderToFetch.quantity;
         }
 
-        if (orderToFetch.quantity >= 11) {
+        if (products.length > 1 && orderToFetch.quantity >= 11) {
           totalPrice *= 0.9; 
           console.log("\nA 10% discount has been applied to your order.\n---------------------------------------------");
         }
@@ -255,11 +247,27 @@ export async function shipOrders() {
       } else {
         console.log("No offer found with the provided name");
       }
+    };
+
+    let choices = await getPendingOrderChoices();
+
+    while (true) {
+      const { orderOrOffer } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "orderOrOffer",
+          message: "Choose an offer to ship: ",
+          choices: choices,
+        },
+      ]);
+
+      if (orderOrOffer === "Exit") {
+        break;
+      } else {
+        await shipOrder(orderOrOffer);
+        choices = await getPendingOrderChoices();
+      }
     }
-    
-    choices = await getPendingOrderChoices();
-
-
   } catch (error) {
     console.log(error);
   }

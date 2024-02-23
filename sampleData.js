@@ -1812,7 +1812,7 @@ export const sampleOrders = [
     }
   },
   {
-    offer: "T-shirt",
+    offer:["T-shirt"],
     quantity: 1,
     status: "pending",
     additional_detail: "N/A",
