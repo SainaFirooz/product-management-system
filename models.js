@@ -50,8 +50,8 @@ const SalesOrdersSchema = mongoose.Schema({
     type: Number,
   },
   date: {
-    date: {type: String},
-    default: {type: String}
+    type: Date,
+    default: Date.now,
   }
 });
 
