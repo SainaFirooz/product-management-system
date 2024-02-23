@@ -1751,7 +1751,7 @@ export const sampleOffers = [
   {
     products: ["Refrigerator", "Smartphone", "Soccer Ball"],
     price: 1830,
-    active: false,
+    active: true,
     category: ["Home Appliances", "Electronics", "Sports & Outdoors"],
   },
   {

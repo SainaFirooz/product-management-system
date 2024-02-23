@@ -34,10 +34,11 @@ export async function viewAllOffers() {
         },
       },
     ]);
+    console.log('---------------------------------------------\nAll offers within a price range:\n');
 
     filteredOffers.forEach((offer, index) => {
       console.log(
-        `All offers within a price range:\nOffer ${
+        `Offer ${
           index + 1
         }:\nProducts: ${offer.products.join(", ")}\nPrice: $${
           offer.price
@@ -155,18 +156,18 @@ export async function orderForProducts() {
       ]);
 
       const newOrder = new SalesOrderModel({
-        order: product,
+        offer: product,
         quantity: quantity,
         status: status,
         additional_detail: additionalDetails,
       });
 
       await newOrder.save();
-      console.log(`Order for ${newOrder.order} has been created with the following details:
+      console.log(`---------------------------------------------\nOrder for ${newOrder.offer} has been created with the following details:
       Quantity: ${newOrder.quantity}
       Status: ${newOrder.status}
       Additional Detail: ${newOrder.additional_detail}
-      Order ID: ${newOrder._id}`);
+      Order ID: ${newOrder._id}\n---------------------------------------------`);
     }
   } catch (error) {
     console.log(error);
@@ -177,25 +178,25 @@ export async function orderForProducts() {
 
 export async function shipOrders() {
   try {
-    const allOrders = await SalesOrderModel.find({ status: "pending" });
+    const getPendingOrderChoices = async () => {
+      const allOrders = await SalesOrderModel.find({ status: "pending" });
+      let choices = [];
+      allOrders.forEach((order) => {
+        if (order.offer && order.offer.length > 0) {
+          choices = choices.concat(order.offer);
+        }
+      });
+      choices.push("Exit");
+      return choices;
+    };
 
-    let choices = [];
-
-    allOrders.forEach((order) => {
-      if (order.order) {
-        choices.push(order.order);
-      } else if (order.offer) {
-        choices.push(order.offer);
-      }
-    });
-
-    choices.push("Exit");
+    let choices = await getPendingOrderChoices();
 
     const { orderOrOffer } = await inquirer.prompt([
       {
         type: "list",
         name: "orderOrOffer",
-        message: "Choose an order to ship: ",
+        message: "Choose an offer to ship: ",
         choices: choices,
       },
     ]);
@@ -204,11 +205,11 @@ export async function shipOrders() {
       return;
     } else {
       const orderToFetch = await SalesOrderModel.findOne({
-        $or: [{ order: orderOrOffer }, { offer: orderOrOffer }],
+        offer: { $all: orderOrOffer.split(', '), $size: orderOrOffer.split(', ').length },
       });
 
       if (orderToFetch) {
-        const products = orderOrOffer.split(' ');
+        const products = orderOrOffer.split(', ');
 
         let totalPrice = 0;
         let totalCost = 0;
@@ -226,9 +227,9 @@ export async function shipOrders() {
             return;
           }
 
-          console.log(`Stock before sale for ${productName}: ${product.stock}`);
+          console.log(`\n---------------------------------------------\nStock before sale for ${productName}: ${product.stock}`);
           product.stock -= orderToFetch.quantity;
-          console.log(`Stock after sale for ${productName}: ${product.stock}`);
+          console.log(`Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------`);
           await product.save();
 
           totalPrice += product.price * orderToFetch.quantity;
@@ -237,31 +238,41 @@ export async function shipOrders() {
 
         if (orderToFetch.quantity >= 11) {
           totalPrice *= 0.9; 
-          console.log("A 10% discount has been applied to your order.");
+          console.log("\nA 10% discount has been applied to your order.\n---------------------------------------------");
         }
 
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
-          { $or: [{ order: orderOrOffer }, { offer: orderOrOffer }] },
-          { status: "shipped", total_price: totalPrice, total_cost: totalCost },
+          { _id: orderToFetch._id },
+          { 
+            status: "shipped", 
+            total_price: totalPrice, 
+            total_cost: totalCost,
+            date: new Date() 
+          },
           { new: true }
         ).exec();
 
-        console.log(`Updated Order Details:
+        console.log(`\nUpdated Order Details:\n
         ID: ${orderToShip._id}
-        Product: ${orderToShip.order || orderToShip.offer}
+        Order: ${orderToShip.offer.join(', ')}
         Quantity: ${orderToShip.quantity}
         Status: ${orderToShip.status} (updated)
         Additional Details: ${orderToShip.additional_detail}
-        Total Price: ${orderToShip.total_price}
-        Total Cost: ${orderToShip.total_cost}
-         `);
+        Total Price: $${orderToShip.total_price}
+        Total Cost: $${orderToShip.total_cost}
+        Shipped Date: ${orderToShip.date}
+        \n---------------------------------------------`);
         console.log(
           "Order has been shipped successfully!\nIt will be delivered within 7 business days\n---------------------------------------------"
         );
       } else {
-        console.log("No order or offer found with the provided name");
+        console.log("No offer found with the provided name");
       }
     }
+    
+    choices = await getPendingOrderChoices();
+
+
   } catch (error) {
     console.log(error);
   }
@@ -271,20 +282,24 @@ export async function shipOrders() {
 
 export async function viewAllSales() {
   try {
-    const allSales = await SalesOrderModel.find({});
+    const allSales = await SalesOrderModel.find({ status: "shipped" });
 
-    allSales.forEach((sale, index) => {
-      let orderOrOffer = sale.order
-        ? `Order: ${sale.order}`
-        : `Offer: ${sale.offer}`;
-      console.log(
-        `Sale ${index + 1}:\n${orderOrOffer}\nQuantity: ${
-          sale.quantity
-        }\nStatus: ${sale.status}\nAdditional Details: ${
-          sale.additional_detail
-        }\n------------------------`
-      );
-    });
+    if (allSales.length === 0) {
+      console.log("No sales found");
+      return;
+    } else {  
+      allSales.forEach((sale, index) => {
+        console.log(`Sale ${index + 1}:\n
+        Order: ${sale.offer.join(', ')}
+        Quantity: ${sale.quantity}
+        Status: ${sale.status}
+        Additional Details: ${sale.additional_detail}
+        Total Price: $${sale.total_price}
+        Total Cost: $${sale.total_cost}
+        Shipped Date: ${sale.date}
+        \n---------------------------------------------`);
+      });
+    }
   } catch (error) {
     console.log(error);
   }
