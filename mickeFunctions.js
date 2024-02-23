@@ -459,9 +459,15 @@ export const productsInStock = async () => {
       ]);
       switch (menu_choice) {
         case "Offers with all products in stock": {
-          let fullOffers = offers_by_stock.fullStock.forEach(
-            (offer, index) => {}
-          );
+          let fullOffers = offers_by_stock.fullStock.forEach((offer, index) => {
+            console.log(
+              `Offer 1${index}\nProducts: ${offer.products.join(
+                " "
+              )}\nPrice: $${offer.price}\nActive: ${
+                offer.active ? "Yes" : "No"
+              }\n---------------------------------------------`
+            );
+          });
           break;
         }
         case "Offers with some products in stock": {
