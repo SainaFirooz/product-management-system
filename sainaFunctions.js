@@ -204,7 +204,7 @@ export async function shipOrders() {
       return;
     } else {
       const orderToFetch = await SalesOrderModel.findOne({
-        offer: orderOrOffer,
+        offer: { $all: orderOrOffer.split(', '), $size: orderOrOffer.split(', ').length },
       });
 
       if (orderToFetch) {
@@ -242,18 +242,24 @@ export async function shipOrders() {
 
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
           { _id: orderToFetch._id },
-          { status: "shipped", total_price: totalPrice, total_cost: totalCost },
+          { 
+            status: "shipped", 
+            total_price: totalPrice, 
+            total_cost: totalCost,
+            date: new Date() // Update the date field
+          },
           { new: true }
         ).exec();
 
         console.log(`\nUpdated Order Details:\n
         ID: ${orderToShip._id}
-        PRoducts: ${orderToShip.offer.join(', ')}
+        Order: ${orderToShip.offer.join(', ')}
         Quantity: ${orderToShip.quantity}
         Status: ${orderToShip.status} (updated)
         Additional Details: ${orderToShip.additional_detail}
         Total Price: $${orderToShip.total_price}
         Total Cost: $${orderToShip.total_cost}
+        Shipped Date: ${orderToShip.date}
         \n---------------------------------------------`);
         console.log(
           "Order has been shipped successfully!\nIt will be delivered within 7 business days\n---------------------------------------------"
@@ -262,12 +268,9 @@ export async function shipOrders() {
         console.log("No offer found with the provided name");
       }
     }
-
-    // After shipping an order, get the updated list of pending orders
+    
     choices = await getPendingOrderChoices();
 
-    // Show the prompt to the user again with the updated choices
-    // ...
 
   } catch (error) {
     console.log(error);
@@ -278,20 +281,24 @@ export async function shipOrders() {
 
 export async function viewAllSales() {
   try {
-    const allSales = await SalesOrderModel.find({});
+    const allSales = await SalesOrderModel.find({ status: "shipped" });
 
-    allSales.forEach((sale, index) => {
-      let orderOrOffer = sale.order
-        ? `Order: ${sale.order}`
-        : `Offer: ${sale.offer}`;
-      console.log(
-        `Sale ${index + 1}:\n${orderOrOffer}\nQuantity: ${
-          sale.quantity
-        }\nStatus: ${sale.status}\nAdditional Details: ${
-          sale.additional_detail
-        }\n------------------------`
-      );
-    });
+    if (allSales.length === 0) {
+      console.log("No sales found");
+      return;
+    } else {  
+      allSales.forEach((sale, index) => {
+        console.log(`Sale ${index + 1}:\n
+        Order: ${sale.offer.join(', ')}
+        Quantity: ${sale.quantity}
+        Status: ${sale.status}
+        Additional Details: ${sale.additional_detail}
+        Total Price: $${sale.total_price}
+        Total Cost: $${sale.total_cost}
+        Shipped Date: ${sale.date}
+        \n---------------------------------------------`);
+      });
+    }
   } catch (error) {
     console.log(error);
   }
