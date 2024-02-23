@@ -5,6 +5,7 @@ import {
   ProductModel,
   CategoryModel,
 } from "./models.js";
+import { addNewCategory } from "./miggeFunctions.js";
 import inquirer from "inquirer";
 let supplier_collection = SupplierModel.collection;
 let offer_collection = OfferModel.collection;
@@ -15,149 +16,242 @@ let category_collection = CategoryModel.collection;
 // Option 2 Add new product
 export const addNewProduct = async () => {
   try {
-    let allSuppliers = await SupplierModel.aggregate([
-      {
-        $group: { _id: "$name" },
-      },
-    ]);
-    let suppliersList = allSuppliers.map((supplier) => supplier._id);
     while (true) {
-      const { supplier_choice } = await inquirer.prompt([
+      const { menu } = await inquirer.prompt([
         {
           type: "list",
-          name: "supplier_choice",
-          message: "Choose Supplier",
-          choices: [...suppliersList, "New supplier", "Exit"],
+          name: "menu",
+          message: "Choose from:",
+          choices: ["Current suppliers", "New Supplier", "Exit"],
         },
       ]);
-      if (supplier_choice === "New supplier") {
-        await addNewSupplier();
+      let allSuppliers = await SupplierModel.aggregate([
+        {
+          $group: { _id: "$name" },
+        },
+      ]);
+      let suppliersList = allSuppliers.map((supplier) => supplier._id);
+
+      if (menu === "New Supplier") {
+        await contructProduct(await addNewSupplier());
         return;
-      } else if (supplier_choice === "Exit") {
+      } else if (menu === "Exit") {
         return;
       } else {
-        const supplier_productList = await ProductModel.aggregate([
-          {
-            $match: { "supplier.name": supplier_choice },
-          },
-          {
-            $project: {
-              _id: 0,
-              supplier: 0,
-            },
-          },
-        ]);
-        console.log(`Products from ${supplier_choice}`);
-        supplier_productList.forEach((product) => {
-          console.log(product.name);
-        });
-        if (supplier_productList.length > 0) {
-          const currentSupplier = await SupplierModel.aggregate([
-            {
-              $match: { name: supplier_choice },
-            },
-            { $project: { _id: 0 } },
-          ]);
-          let newProduct = {
-            ...supplier_productList[0],
-            supplier: currentSupplier,
-          };
-          console.log("Before Product:", newProduct);
-
-          let newItems = { ...supplier_productList[0] };
-          for (const key in newItems) {
-            console.log(key);
-            if (key != "category") {
-              if (isNaN(newItems[key])) {
-                newItems[key] = "";
-                const { choice } = await inquirer.prompt([
-                  {
-                    type: "input",
-                    name: "choice",
-                    message: `Enter product ${key}`,
-                    validate: (value) =>
-                      isNaN(value) ? true : "Dont use only numbers",
-                  },
-                ]);
-                newProduct[key] = choice;
-              } else {
-                newItems[key] = 0;
-                const { choice } = await inquirer.prompt([
-                  {
-                    type: "input",
-                    name: "choice",
-                    message: `Enter: ${key}`,
-                    validate: (value) => (!isNaN(value) ? true : "Use numbers"),
-                  },
-                ]);
-                newProduct[key] = choice;
-              }
-            } else {
-              const newCategoryList = [];
-              console.log(newCategoryList);
-              const currentCategories = await CategoryModel.aggregate([
-                {
-                  $group: { _id: "$name" },
-                },
-              ]);
-              while (true) {
-                const { category_choice } = await inquirer.prompt([
-                  {
-                    type: "list",
-                    name: "category_choice",
-                    message: "Add a category",
-                    choices: [
-                      ...currentCategories.map((x) => x._id),
-                      "Continue",
-                    ],
-                  },
-                ]);
-                if (
-                  !newCategoryList.includes(category_choice) &&
-                  category_choice != "Exit"
-                ) {
-                  newCategoryList.push(category_choice);
-                  console.log(newCategoryList);
-
-                  const { proceed } = await inquirer.prompt([
-                    {
-                      type: "confirm",
-                      name: "proceed",
-                      message: "Add another category? (y/n)",
-                      default: false,
-                    },
-                  ]);
-                  if (!proceed) break;
-                } else if (category_choice === "Continue") {
-                  break;
-                }
-              }
-              newProduct[key] = newCategoryList;
-            }
-          }
-          console.log("After Product:", newProduct);
-          const { decision } = await inquirer.prompt([
-            {
-              name: "decision",
-              type: "confirm",
-              message: "Insert into collection? (y/n)",
-              default: false,
-            },
-          ]);
-          if (decision) {
-            await product_collection.insertOne(newProduct);
-          } else {
-            console.log("Insertion cancelled.\n -------------------------");
-            return;
-          }
-        }
+        await contructProduct(null);
+        return;
       }
     }
   } catch (error) {
     console.log(error);
   }
 };
+const contructProduct = async (newSupplier) => {
+  let allSuppliers = await SupplierModel.aggregate([
+    {
+      $group: { _id: "$name" },
+    },
+  ]);
+  let suppliersList = allSuppliers.map((supplier) => supplier._id);
+  console.log("NEW SUPPLIER:", newSupplier);
+  const { supplier_choice } = newSupplier
+    ? newSupplier
+    : await inquirer.prompt([
+        {
+          type: "list",
+          name: "supplier_choice",
+          message: "Choose Supplier",
+          choices: [...suppliersList],
+        },
+      ]);
+  const supplier_productList = await ProductModel.aggregate([
+    {
+      $match: { "supplier.name": supplier_choice },
+    },
+    {
+      $project: {
+        _id: 0,
+        supplier: 0,
+      },
+    },
+  ]);
+  console.log(supplier_productList);
+  console.log(`Products from ${supplier_choice}`);
+  supplier_productList.forEach((product) => {
+    console.log(product.name);
+  });
 
+  const currentSupplier = newSupplier
+    ? newSupplier
+    : await SupplierModel.aggregate([
+        {
+          $match: { name: supplier_choice },
+        },
+        { $project: { _id: 0 } },
+      ]);
+  let newProduct = {
+    name: "",
+    category: {
+      name: "",
+      description: "",
+      products: [],
+    },
+    price: 0,
+    cost: 0,
+    stock: 0,
+    supplier: currentSupplier,
+  };
+  // let newProduct = {
+  //   ...supplier_productList[0],
+  //   supplier: currentSupplier,
+  // };
+  console.log("Before Product:", newProduct);
+
+  let newItems = { ...supplier_productList[0] };
+  for (const key in newItems) {
+    console.log(key);
+    if (key != "category") {
+      if (isNaN(newItems[key])) {
+        newItems[key] = "";
+        const { choice } = await inquirer.prompt([
+          {
+            type: "input",
+            name: "choice",
+            message: `Enter product ${key}`,
+            validate: (value) =>
+              isNaN(value) ? true : "Dont use only numbers",
+          },
+        ]);
+        newProduct[key] = choice;
+      } else {
+        newItems[key] = 0;
+        const { choice } = await inquirer.prompt([
+          {
+            type: "input",
+            name: "choice",
+            message: `Enter: ${key}`,
+            validate: (value) => (!isNaN(value) ? true : "Use numbers"),
+          },
+        ]);
+        newProduct[key] = choice;
+      }
+    } else {
+      const newCategoryList = [];
+      console.log(newCategoryList);
+      const currentCategories = await CategoryModel.aggregate([
+        {
+          $group: { _id: "$name" },
+        },
+      ]);
+      while (true) {
+        const { category_menu } = await inquirer.prompt([
+          {
+            type: "list",
+            name: "category_menu",
+            message: "Add:",
+            choices: ["Existing category", "New category", "Continue"],
+            default: "Existing category",
+          },
+        ]);
+        switch (category_menu) {
+          case "Existing category": {
+            console.log("EXISTING");
+            const { category_choice } = await inquirer.prompt([
+              {
+                type: "list",
+                name: "category_choice",
+                message: "Add a category",
+                choices: [...currentCategories.map((x) => x._id)],
+              },
+            ]);
+            if (
+              !newCategoryList.includes(category_choice) &&
+              category_choice != "Exit"
+            ) {
+              const categoryInfo = await CategoryModel.aggregate([
+                {
+                  $match: { name: category_choice },
+                },
+              ]);
+              newCategoryList.push(categoryInfo[0]);
+              console.log("ADDED CATEGORIES:\n-------------------");
+              newCategoryList.forEach((c, i) => {
+                console.log(`${i + 1}: ${c.name}`);
+              });
+              console.log("-------------------");
+            }
+            break;
+          }
+          case "New category": {
+            await addNewCategory();
+            // let newCategory = {
+            //   name: "",
+            //   description: "",
+            //   products: [newProduct.name],
+            // };
+            // let allProductsList = await ProductModel.aggregate([
+            //   {
+            //     $project: {
+            //       _id: 0,
+            //       name: 1,
+            //     },
+            //   },
+            // ]);
+            // console.log(allProductsList.sort());
+            // console.log(newCategory);
+            // break;
+          }
+          case "Continue": {
+            if (newCategoryList.length > 0) {
+              newProduct[key] = newCategoryList;
+            } else {
+              console.log(
+                "---------------------------------------------\nOPERATION ABORTED: Invalid category selection.\n---------------------------------------------"
+              );
+              return;
+            }
+            break;
+          }
+        }
+
+        const { proceed } = await inquirer.prompt([
+          {
+            type: "confirm",
+            name: "proceed",
+            message: "Add another category? (y/n)",
+            default: false,
+          },
+        ]);
+        if (!proceed) break;
+        //END OF WHILE LOOP
+      }
+      //END OF WHILE LOOP
+      if (newCategoryList.length > 0) {
+        newProduct[key] = newCategoryList;
+      } else {
+        console.log(
+          "---------------------------------------------\nOPERATION ABORTED: Invalid category selection.\n---------------------------------------------"
+        );
+        return;
+      }
+    }
+  }
+  console.log("After Product:", newProduct);
+  const { decision } = await inquirer.prompt([
+    {
+      name: "decision",
+      type: "confirm",
+      message: "Insert into collection? (y/n)",
+      default: false,
+    },
+  ]);
+  if (decision) {
+    await product_collection.insertOne(newProduct);
+  } else {
+    console.log("Insertion cancelled.\n -------------------------");
+    return;
+  }
+};
 //Option 9 Order for offers
 export const orderForOffers = async () => {
   try {
@@ -266,6 +360,7 @@ export const addNewSupplier = async () => {
     ]);
     if (insert_decision) {
       await supplier_collection.insertOne(newSupplier);
+      return newSupplier;
     } else {
       return;
     }
