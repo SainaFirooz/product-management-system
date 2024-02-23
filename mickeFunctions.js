@@ -424,22 +424,22 @@ export const productsInStock = async () => {
       partialStock: [],
       fullStock: [],
     };
-
-    offersList.forEach(async (offer, offer_index) => {
+    let o = offersList;
+    for (let o_index = 0; o_index < o.length; o_index++) {
+      let stockLength = 0;
       console.log(
         "OFFER:------------------------------------------------- " +
-          offer_index +
-          1
+          (o_index + 1)
       );
-      for (let i = 0; i < offer.products.length; i++) {
+      for (let i = 0; i < o[o_index].products.length; i++) {
+        console.log("product: " + (i + 1));
         const matching = await ProductModel.aggregate([
           {
-            $match: { name: { $in: [offer.products[i]] } },
+            $match: { name: { $in: [o[o_index].products[i]] } },
           },
         ]);
-        console.log(matching);
       }
-    });
+    }
     // for (const offer in offersList) {
     //   let stockLength = 0;
     //   for (const product in offer.products) {
@@ -455,16 +455,16 @@ export const productsInStock = async () => {
     //     console.log(stockLength);
     //     console.log(matchingProduct);
     //   }
-    //   // if (stockLength === offer.products.length) {
-    //   //   console.log("added to fullStock");
-    //   //   offers_by_stock.fullStock.push(offer);
-    //   // } else if (stockLength > 0 && stockLength < offer.products.length) {
-    //   //   console.log("added to partialStock");
-    //   //   offers_by_stock.partialStock.push(offer);
-    //   // } else {
-    //   //   console.log("added to notInStock");
-    //   //   offers_by_stock.notInStock.push(offer);
-    //   // }
+    // if (stockLength === offer.products.length) {
+    //   console.log("added to fullStock");
+    //   offers_by_stock.fullStock.push(offer);
+    // } else if (stockLength > 0 && stockLength < offer.products.length) {
+    //   console.log("added to partialStock");
+    //   offers_by_stock.partialStock.push(offer);
+    // } else {
+    //   console.log("added to notInStock");
+    //   offers_by_stock.notInStock.push(offer);
+    // }
     // }
 
     while (true) {
