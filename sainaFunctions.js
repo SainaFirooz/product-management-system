@@ -73,24 +73,9 @@ export async function specificCategory() {
       return;
     }
 
-    const offersContainingCategory = await OfferModel.aggregate([
-      {
-        $match: {
-          category: { $in: [category] },
-        },
-      },
-      {
-        $unwind: "$products",
-      },
-      {
-        $group: {
-          _id: "$_id",
-          price: { $first: "$price" },
-          active: { $first: "$active" },
-          products: { $push: "$products" },
-        },
-      },
-    ]);
+    const offersContainingCategory = await OfferModel.find({
+      category: { $in: [category] },
+    });
 
     if (offersContainingCategory.length === 0) {
       console.log(`No offers found for category: ${category}`);
