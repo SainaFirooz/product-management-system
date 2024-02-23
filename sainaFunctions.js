@@ -34,10 +34,11 @@ export async function viewAllOffers() {
         },
       },
     ]);
+    console.log('---------------------------------------------\nAll offers within a price range:\n');
 
     filteredOffers.forEach((offer, index) => {
       console.log(
-        `All offers within a price range:\nOffer ${
+        `Offer ${
           index + 1
         }:\nProducts: ${offer.products.join(", ")}\nPrice: $${
           offer.price
@@ -162,11 +163,11 @@ export async function orderForProducts() {
       });
 
       await newOrder.save();
-      console.log(`Order for ${newOrder.offer} has been created with the following details:
+      console.log(`---------------------------------------------\nOrder for ${newOrder.offer} has been created with the following details:
       Quantity: ${newOrder.quantity}
       Status: ${newOrder.status}
       Additional Detail: ${newOrder.additional_detail}
-      Order ID: ${newOrder._id}`);
+      Order ID: ${newOrder._id}\n---------------------------------------------`);
     }
   } catch (error) {
     console.log(error);
@@ -246,7 +247,7 @@ export async function shipOrders() {
             status: "shipped", 
             total_price: totalPrice, 
             total_cost: totalCost,
-            date: new Date() // Update the date field
+            date: new Date() 
           },
           { new: true }
         ).exec();
