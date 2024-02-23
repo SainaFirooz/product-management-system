@@ -4,6 +4,7 @@ import {
   orderForOffers,
   addNewSupplier,
   sumOfAllProfits,
+  productsInStock,
 } from "./mickeFunctions.js";
 import inquirer from "inquirer";
 import {
@@ -14,8 +15,19 @@ import {
   CategoryModel,
 } from "./models.js";
 import { sampleOffers } from "./sampleData.js";
-import { viewAllOffers, specificCategory, orderForProducts, shipOrders, viewAllSales } from "./sainaFunctions.js";
-import {addNewCategory, productsByCategory, productsBySupplier, viewSuppliers} from "./miggeFunctions.js"
+import {
+  viewAllOffers,
+  specificCategory,
+  orderForProducts,
+  shipOrders,
+  viewAllSales,
+} from "./sainaFunctions.js";
+import {
+  addNewCategory,
+  productsByCategory,
+  productsBySupplier,
+  viewSuppliers,
+} from "./miggeFunctions.js";
 
 let supplier_collection = SupplierModel.collection;
 let offer_collection = OfferModel.collection;
