@@ -57,7 +57,7 @@ export async function viewAllOffers() {
 export async function specificCategory() {
   try {
     const allCategories = await ProductModel.aggregate([
-      { $group: { _id: "$category" } },
+      { $group: { _id: "$category.name" } },
     ]);
 
     const { category } = await inquirer.prompt([
