@@ -55,49 +55,53 @@ export async function viewAllOffers() {
 // menu option 6
 
 export async function specificCategory() {
-  try {
-    const allCategories = await ProductModel.aggregate([
-      { $group: { _id: "$category.name" } },
-    ]);
+  let category = '';
+  while (category !== "Exit") {
+    try {
+      const allCategories = await ProductModel.aggregate([
+        { $group: { _id: "$category.name" } },
+      ]);
 
-    const { category } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "category",
-        message: "Choose a category",
-        choices: allCategories.map((category) => category._id).concat("Exit"),
-      },
-    ]);
+      const response = await inquirer.prompt([
+        {
+          type: "list",
+          name: "category",
+          message: "Choose a category",
+          choices: allCategories.map((category) => category._id).concat("Exit"),
+        },
+      ]);
 
-    if (category === "Exit") {
-      return;
+      category = response.category;
+
+      if (category === "Exit") {
+        return;
+      }
+
+      const offersContainingCategory = await OfferModel.find({
+        category: { $in: [category] },
+      });
+
+      if (offersContainingCategory.length === 0) {
+        console.log(`No offers found for category: ${category}`);
+        continue;
+      }
+
+      console.log(`---------------------------------------------\nOffers for category: ${category}\n`);
+
+      offersContainingCategory.forEach((offer, index) => {
+        console.log(
+          `Offer ${index + 1}:\nPrice: $${offer.price} \nActive: ${
+            offer.active ? "Yes" : "No"
+          }\nIncluded Products: ${offer.products.join(
+            ", "
+          )}\n---------------------------------------------`
+        );
+      });
+    } catch (error) {
+      console.log(error);
     }
-
-    const offersContainingCategory = await OfferModel.find({
-      category: { $in: [category] },
-    });
-
-    if (offersContainingCategory.length === 0) {
-      console.log(`No offers found for category: ${category}`);
-      return;
-    }
-
-    console.log(`---------------------------------------------\nOffers for category: ${category}\n`);
-
-    offersContainingCategory.forEach((offer, index) => {
-      console.log(
-        `Offer ${index + 1}:\nPrice: $${offer.price} \nActive: ${
-          offer.active ? "Yes" : "No"
-        }\nIncluded Products: ${offer.products.join(
-          ", "
-        )}\n---------------------------------------------`
-      );
-    });
-  } catch (error) {
-    console.log(error);
   }
 }
-
 // menu option 8
 export async function orderForProducts() {
   try {
@@ -206,9 +210,9 @@ export async function shipOrders() {
             return;
           }
 
-          console.log(`\n---------------------------------------------\nStock before sale for ${productName}: ${product.stock}`);
+          console.log(`---------------------------------------------\nStock before sale for ${productName}: ${product.stock}`);
           product.stock -= orderToFetch.quantity;
-          console.log(`Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------`);
+          console.log(`Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------\n`);
           await product.save();
 
           totalPrice += product.price * orderToFetch.quantity;
@@ -217,7 +221,7 @@ export async function shipOrders() {
 
         if (products.length > 1 && orderToFetch.quantity >= 11) {
           totalPrice *= 0.9; 
-          console.log("\nA 10% discount has been applied to your order.\n---------------------------------------------");
+          console.log("---------------------------------------------\nA 10% discount has been applied to the order.\n---------------------------------------------");
         }
 
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
