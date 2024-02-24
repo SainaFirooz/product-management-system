@@ -116,7 +116,7 @@ export async function orderForProducts() {
         type: "list",
         name: "product",
         message: "Choose a product: ",
-        choices: [...allProducts.map((product) => product._id), "Exit"],
+        choices: [...allProducts.map((product) => product._id).sort(), "Exit"],
       },
     ]);
 
