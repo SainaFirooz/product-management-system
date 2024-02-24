@@ -170,7 +170,7 @@ export async function orderForProducts() {
 export async function shipOrders() {
   try {
     const getPendingOrderChoices = async () => {
-      const allOrders = await SalesOrderModel.find({ status: "pending" });
+      const allOrders = await SalesOrderModel.find({ status: "pending" }).sort('-date');
       let choices = [];
       allOrders.forEach((order) => {
         if (order.offer && order.offer.length > 0) {
@@ -183,12 +183,12 @@ export async function shipOrders() {
 
     const shipOrder = async (orderOrOffer) => {
       const products = orderOrOffer.split(', ');
-    
+
       const orders = await SalesOrderModel.aggregate([
         { $unwind: "$offer" },
         { $match: { "offer": { $in: products }, "status": "pending" } }
       ]);
-    
+
       const orderToFetch = orders.length > 0 ? orders[0] : null;
 
       if (orderToFetch) {
