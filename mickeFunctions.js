@@ -378,7 +378,11 @@ export const sumOfAllProfits = async () => {
             },
           ]);
           console.log(
-            `------------------------------\nno. Sales: ${allSales[0].sales}\nTotal profit: ${allSales[0].totalProfit}\n------------------------------`
+            `------------------------------\nno. Sales: ${
+              allSales[0].sales - 1
+            }\nTotal profit: ${
+              allSales[0].totalProfit
+            }\n------------------------------`
           );
 
           break;
