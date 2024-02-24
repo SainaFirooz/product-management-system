@@ -1003,7 +1003,7 @@ export const sampleProducts = [
     },
   },
   {
-    name: "Air Fryer",
+    name: " ",
     category: {
       name: "Home Appliances",
       description: "Cooking Appliance",
@@ -1805,14 +1805,14 @@ export const sampleOrders = [
     status: "pending",
     additional_detail: "N/A",
     total_price: 1750,
-    total_cost: 1400, 
+    total_cost: 1400,
     date: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
-    offer:["T-shirt"],
+    offer: ["T-shirt"],
     quantity: 1,
     status: "pending",
     additional_detail: "N/A",
@@ -1820,8 +1820,8 @@ export const sampleOrders = [
     total_cost: 10,
     date: {
       type: "date",
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
     offer: ["Refrigerator", "Shampoo", "Soccer Ball"],
@@ -1832,8 +1832,8 @@ export const sampleOrders = [
     total_cost: 1025,
     date: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
     offer: ["Smartwatch", "Smart Wireless Earbuds", "Jeans"],
@@ -1844,9 +1844,9 @@ export const sampleOrders = [
     total_cost: 245,
     date: {
       type: Date,
-      default: Date.now
-    }
-  }
+      default: Date.now,
+    },
+  },
 ];
 
 export const sampleCategories = [
