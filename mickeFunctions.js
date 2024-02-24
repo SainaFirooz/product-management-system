@@ -201,7 +201,7 @@ export const orderForOffers = async () => {
         default: "N/A",
       });
       const newSalesOrder = new SalesOrderModel({
-        offer: FINAL_offer,
+        offer: FINAL_offer.split(", "),
         quantity: FINAL_quantity,
         status: "pending",
         additional_detail: FINAL_details,
