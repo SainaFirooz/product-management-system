@@ -54,6 +54,9 @@ const contructProduct = async (newSupplier) => {
   ]);
   let suppliersList = allSuppliers.map((supplier) => supplier._id);
   console.log("NEW SUPPLIER:", newSupplier);
+  if (!newSupplier) {
+    console.log("current supplier chosen");
+  }
   const { supplier_choice } = newSupplier
     ? newSupplier
     : await inquirer.prompt([
@@ -64,6 +67,7 @@ const contructProduct = async (newSupplier) => {
           choices: [...suppliersList],
         },
       ]);
+  console.log("SUPPLIER CHOICE: ", supplier_choice);
   const supplier_productList = await ProductModel.aggregate([
     {
       $match: { "supplier.name": supplier_choice },
@@ -90,10 +94,10 @@ const contructProduct = async (newSupplier) => {
         { $project: { _id: 0 } },
       ]);
   let newProduct = {
-    name: "",
+    name: "N/A",
     category: {
-      name: "",
-      description: "",
+      name: "N/A",
+      description: "N/A",
       products: [],
     },
     price: 0,
@@ -101,16 +105,12 @@ const contructProduct = async (newSupplier) => {
     stock: 0,
     supplier: currentSupplier,
   };
-  // let newProduct = {
-  //   ...supplier_productList[0],
-  //   supplier: currentSupplier,
-  // };
+
   console.log("Before Product:", newProduct);
 
-  let newItems = { ...supplier_productList[0] };
+  let newItems = { ...newProduct };
   for (const key in newItems) {
-    console.log(key);
-    if (key != "category") {
+    if (key != "category" && key != "supplier") {
       if (isNaN(newItems[key])) {
         newItems[key] = "";
         const { choice } = await inquirer.prompt([
@@ -135,105 +135,84 @@ const contructProduct = async (newSupplier) => {
         ]);
         newProduct[key] = choice;
       }
-    } else {
-      const newCategoryList = [];
-      console.log(newCategoryList);
+    } else if (key != "supplier") {
       const currentCategories = await CategoryModel.aggregate([
         {
           $group: { _id: "$name" },
         },
       ]);
-      while (true) {
-        const { category_menu } = await inquirer.prompt([
+
+      const { category_menu } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "category_menu",
+          message: "Pick:",
+          choices: ["Existing category", "New category"],
+          default: "Existing category",
+        },
+      ]);
+      switch (category_menu) {
+        case "Existing category": {
+          const { category_choice } = await inquirer.prompt([
+            {
+              type: "list",
+              name: "category_choice",
+              message: "Add a category",
+              choices: [...currentCategories.map((x) => x._id)],
+            },
+          ]);
           {
-            type: "list",
-            name: "category_menu",
-            message: "Add:",
-            choices: ["Existing category", "New category", "Continue"],
-            default: "Existing category",
-          },
-        ]);
-        switch (category_menu) {
-          case "Existing category": {
-            console.log("EXISTING");
-            const { category_choice } = await inquirer.prompt([
+            const categoryInfo = await CategoryModel.aggregate([
               {
-                type: "list",
-                name: "category_choice",
-                message: "Add a category",
-                choices: [...currentCategories.map((x) => x._id)],
+                $match: { name: category_choice },
               },
             ]);
-            if (
-              !newCategoryList.includes(category_choice) &&
-              category_choice != "Exit"
-            ) {
-              const categoryInfo = await CategoryModel.aggregate([
-                {
-                  $match: { name: category_choice },
-                },
-              ]);
-              newCategoryList.push(categoryInfo[0]);
-              console.log("ADDED CATEGORIES:\n-------------------");
-              newCategoryList.forEach((c, i) => {
-                console.log(`${i + 1}: ${c.name}`);
-              });
-              console.log("-------------------");
-            }
-            break;
-          }
-          case "New category": {
-            await addNewCategory();
-            // let newCategory = {
-            //   name: "",
-            //   description: "",
-            //   products: [newProduct.name],
-            // };
-            // let allProductsList = await ProductModel.aggregate([
-            //   {
-            //     $project: {
-            //       _id: 0,
-            //       name: 1,
-            //     },
-            //   },
-            // ]);
-            // console.log(allProductsList.sort());
-            // console.log(newCategory);
-            // break;
-          }
-          case "Continue": {
-            if (newCategoryList.length > 0) {
-              newProduct[key] = newCategoryList;
-            } else {
-              console.log(
-                "---------------------------------------------\nOPERATION ABORTED: Invalid category selection.\n---------------------------------------------"
-              );
-              return;
-            }
+            newProduct[key] = categoryInfo[0];
+            console.log("ADDED CATEGORY:\n-------------------");
+            console.log("Name: ", newProduct[key].name);
+            console.log("Description: ", newProduct[key].description);
+            console.log("-------------------");
+
             break;
           }
         }
+        case "New category": {
+          newProduct[key] = await addNewCategory();
+          break;
+        }
+      }
+      // case "Continue": {
+      //   if (newCategoryList.length > 0) {
+      //     newProduct[key] = newCategoryList;
+      //   } else {
+      //     console.log(
+      //       "---------------------------------------------\nOPERATION ABORTED: Invalid category selection.\n---------------------------------------------"
+      //     );
+      //     return;
+      //   }
+      //   break;
+      // }
 
-        const { proceed } = await inquirer.prompt([
-          {
-            type: "confirm",
-            name: "proceed",
-            message: "Add another category? (y/n)",
-            default: false,
-          },
-        ]);
-        if (!proceed) break;
-        //END OF WHILE LOOP
-      }
+      // const { proceed } = await inquirer.prompt([
+      //   {
+      //     type: "confirm",
+      //     name: "proceed",
+      //     message: "Add another category? (y/n)",
+      //     default: false,
+      //   },
+      // ]);
+      // if (!proceed) break;
       //END OF WHILE LOOP
-      if (newCategoryList.length > 0) {
-        newProduct[key] = newCategoryList;
-      } else {
-        console.log(
-          "---------------------------------------------\nOPERATION ABORTED: Invalid category selection.\n---------------------------------------------"
-        );
-        return;
-      }
+
+      //END OF WHILE LOOP
+      // if (newCategoryList.length > 0) {
+      //   newProduct[key] = newCategoryList;
+      // } else {
+      //   console.log(
+      //     "---------------------------------------------\nOPERATION ABORTED: Invalid category selection.\n---------------------------------------------"
+      //   );
+      //   return;
+      // }
     }
   }
   console.log("After Product:", newProduct);
