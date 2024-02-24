@@ -11,24 +11,40 @@ export const addNewCategory = async () => {
   ]);
   console.log(currentCategories);
   try {
-    const { category_name, category_description } = await inquirer.prompt([
-      {
-        type: "input",
-        name: "category_choice",
-        message: "Enter new category",
-      },
-      {
-        type: "input",
-        name: "category_description",
-        message: "Enter a description",
-      },
-    ]);
     const newCategory = {
-      name: category_name,
-      description: category_description,
+      name: "",
+      description: "",
     };
-    category_collection.insertOne(newCategory);
-    console.log("You´ve inserted a new category", category_choice);
+    while (true) {
+      const { category_name, category_description } = await inquirer.prompt([
+        {
+          type: "input",
+          name: "category_name",
+          message: "Enter new category",
+        },
+        {
+          type: "input",
+          name: "category_description",
+          message: "Enter a description",
+        },
+      ]);
+      let c_check = await CategoryModel.aggregate([
+        {
+          $match: { name: category_name },
+        },
+      ]);
+      if (c_check.length <= 0) {
+        newCategory.name = category_name;
+        newCategory.description = category_description;
+        category_collection.insertOne(newCategory);
+        console.log("You´ve inserted a new category", newCategory);
+        break;
+      } else {
+        console.log(
+          "-----------INVALID ENTRY-----------\nCategory already exists in the database\n---------------------------------"
+        );
+      }
+    }
     return newCategory;
   } catch (error) {
     console.log(error);

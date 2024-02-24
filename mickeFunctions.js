@@ -122,7 +122,7 @@ const contructProduct = async (newSupplier) => {
               isNaN(value) ? true : "Dont use only numbers",
           },
         ]);
-        newProduct[key] = choice;
+        newProduct[key] = await choice;
       } else {
         newItems[key] = 0;
         const { choice } = await inquirer.prompt([
@@ -133,7 +133,7 @@ const contructProduct = async (newSupplier) => {
             validate: (value) => (!isNaN(value) ? true : "Use numbers"),
           },
         ]);
-        newProduct[key] = choice;
+        newProduct[key] = await choice;
       }
     } else if (key != "supplier") {
       const currentCategories = await CategoryModel.aggregate([
