@@ -107,7 +107,7 @@ const contructProduct = async (newSupplier) => {
     price: 0,
     cost: 0,
     stock: 0,
-    supplier: currentSupplier,
+    supplier: newSupplier ? currentSupplier : currentSupplier[0],
   };
   let newItems = { ...newProduct };
   for (const key in newItems) {
@@ -211,7 +211,6 @@ const contructProduct = async (newSupplier) => {
     return;
   }
 };
-//Option 9 Order for offers
 export const orderForOffers = async () => {
   try {
     let currentOffers = await OfferModel.find({});
@@ -260,7 +259,13 @@ export const orderForOffers = async () => {
         additional_detail: FINAL_details,
       });
 
-      console.log("NEW ORDER READY:", newSalesOrder);
+      console.log("-----NEW ORDER READY-----");
+      console.log(`Products: ${newSalesOrder.offer.join(", ")}`);
+      console.log(`Quantity: ${newSalesOrder.quantity}`);
+      console.log(`Status: ${newSalesOrder.status}`);
+      console.log(
+        `Additional details:\n    ${newSalesOrder.additional_detail}\n-----------------------`
+      );
 
       const { insert_decision } = await inquirer.prompt([
         {
@@ -377,6 +382,7 @@ export const sumOfAllProfits = async () => {
               },
             },
           ]);
+          console.log("ALL SALES: ", allSales[0]);
           console.log(
             `------------------------------\nno. Sales: ${allSales[0].sales}\nTotal profit: ${allSales[0].totalProfit}\n------------------------------`
           );
