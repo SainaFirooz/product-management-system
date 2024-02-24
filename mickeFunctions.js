@@ -13,7 +13,6 @@ let salesOrder_collection = SalesOrderModel.collection;
 let product_collection = ProductModel.collection;
 let category_collection = CategoryModel.collection;
 
-// Option 2 Add new product
 export const addNewProduct = async () => {
   try {
     while (true) {
