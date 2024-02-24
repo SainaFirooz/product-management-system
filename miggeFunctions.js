@@ -9,7 +9,6 @@ export const addNewCategory = async () => {
       $group: { _id: "$name" },
     },
   ]);
-  console.log(currentCategories);
   try {
     const newCategory = {
       name: "",
@@ -57,6 +56,7 @@ export async function productsByCategory() {
 
   const categoryChoices = allCategories.map((category) => category.name);
 
+  console.log(categoryChoices);
   const categoryAnswer = await inquirer.prompt([
     {
       type: "list",
@@ -79,7 +79,8 @@ export async function productsByCategory() {
     console.log(`Name: ${product.name}`);
     console.log(`Price: ${product.price}`);
     console.log(`Cost: ${product.cost}`);
-    console.log(`Supplier: ${product.supplier.name}`); // assuming supplier is an object with a name property
+    console.log(`Supplier: ${product.supplier.name}`);
+    console.log(`Category: ${product.category.name}`);
     console.log(`Stock Quantity: ${product.stock}`);
     console.log("---------------------------------");
   });
@@ -113,6 +114,7 @@ export async function productsBySupplier() {
     console.log(`Price: ${product.price}`);
     console.log(`Cost: ${product.cost}`);
     console.log(`Supplier: ${product.supplier.name}`);
+    console.log(`Category: ${product.category.name}`);
     console.log(`Stock Quantity: ${product.stock}`);
     console.log("---------------------------------");
   });

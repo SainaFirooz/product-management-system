@@ -57,16 +57,21 @@ const contructProduct = async (newSupplier) => {
   if (!newSupplier) {
     console.log("current supplier chosen");
   }
-  const { supplier_choice } = newSupplier
-    ? newSupplier
-    : await inquirer.prompt([
-        {
-          type: "list",
-          name: "supplier_choice",
-          message: "Choose Supplier",
-          choices: [...suppliersList],
-        },
-      ]);
+  let supplier_choice = null;
+  if (!newSupplier) {
+    const { supplier_prompt } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "supplier_prompt",
+        message: "Choose Supplier",
+        choices: [...suppliersList],
+      },
+    ]);
+    supplier_choice = supplier_prompt;
+  } else {
+    supplier_choice = newSupplier;
+  }
+
   console.log("SUPPLIER CHOICE: ", supplier_choice);
   const supplier_productList = await ProductModel.aggregate([
     {
@@ -105,9 +110,6 @@ const contructProduct = async (newSupplier) => {
     stock: 0,
     supplier: currentSupplier,
   };
-
-  console.log("Before Product:", newProduct);
-
   let newItems = { ...newProduct };
   for (const key in newItems) {
     if (key != "category" && key != "supplier") {
@@ -133,6 +135,8 @@ const contructProduct = async (newSupplier) => {
             validate: (value) => (!isNaN(value) ? true : "Use numbers"),
           },
         ]);
+        if (key === "cost") {
+        }
         newProduct[key] = await choice;
       }
     } else if (key != "supplier") {
@@ -181,41 +185,18 @@ const contructProduct = async (newSupplier) => {
           break;
         }
       }
-      // case "Continue": {
-      //   if (newCategoryList.length > 0) {
-      //     newProduct[key] = newCategoryList;
-      //   } else {
-      //     console.log(
-      //       "---------------------------------------------\nOPERATION ABORTED: Invalid category selection.\n---------------------------------------------"
-      //     );
-      //     return;
-      //   }
-      //   break;
-      // }
-
-      // const { proceed } = await inquirer.prompt([
-      //   {
-      //     type: "confirm",
-      //     name: "proceed",
-      //     message: "Add another category? (y/n)",
-      //     default: false,
-      //   },
-      // ]);
-      // if (!proceed) break;
-      //END OF WHILE LOOP
-
-      //END OF WHILE LOOP
-      // if (newCategoryList.length > 0) {
-      //   newProduct[key] = newCategoryList;
-      // } else {
-      //   console.log(
-      //     "---------------------------------------------\nOPERATION ABORTED: Invalid category selection.\n---------------------------------------------"
-      //   );
-      //   return;
-      // }
     }
   }
-  console.log("After Product:", newProduct);
+  console.log(
+    `-----PRODUCT READY TO INSERT-----\n
+  Name: ${newProduct.name}\n
+  Category: ${newProduct.category.name}\n
+  Price: ${newProduct.price}\n
+  Cost: ${newProduct.cost}\n
+  Stock Quantity: ${newProduct.stock}\n
+  Supplier: ${newProduct.supplier.name}\n
+  -----------------------------------`
+  );
   const { decision } = await inquirer.prompt([
     {
       name: "decision",
@@ -334,13 +315,15 @@ export const addNewSupplier = async () => {
       {
         input: "confirm",
         name: "insert_decision",
-        message: "Insert new supplier into collection?",
+        message: "Insert new supplier into collection? (y/n)",
+        default: "n",
       },
     ]);
-    if (insert_decision) {
+    if (insert_decision === "y") {
       await supplier_collection.insertOne(newSupplier);
       return newSupplier;
     } else {
+      console.log("Operation cancelled. \n---------------------");
       return;
     }
   } catch (error) {
@@ -533,30 +516,36 @@ export const productsInStock = async () => {
       ]);
       switch (menu_choice) {
         case "Offers with all products in stock": {
-          let fullOffers = offers_by_stock.fullStock.forEach((offer, index) => {
-            console.log(
-              `Offer 1${index}\nProducts: ${offer.products.join(
-                " "
-              )}\nPrice: $${offer.price}\nActive: ${
-                offer.active ? "Yes" : "No"
-              }\n---------------------------------------------`
-            );
-          });
+          stockMessage(offers_by_stock.fullStock);
           break;
         }
         case "Offers with some products in stock": {
+          stockMessage(offers_by_stock.partialStock);
           break;
         }
         case "Offers with no products in stock": {
+          stockMessage(offers_by_stock.notInStock);
           break;
         }
         case "Exit": {
+          return;
         }
       }
     }
   } catch (error) {
     console.log(error);
   }
+};
+const stockMessage = (stockStatus) => {
+  stockStatus.forEach((offer, index) => {
+    console.log(
+      `Offer 1${index}\nProducts: ${offer.products.join(" ")}\nPrice: $${
+        offer.price
+      }\nActive: ${
+        offer.active ? "Yes" : "No"
+      }\n---------------------------------------------`
+    );
+  });
 };
 //AGGREGATE FRÅN OFFERS => ALL
 //LOOPA IGENOM CHECKA VIA AGGREGATE FRÅN PRODUCTS OM PRODUCTEN HAR STOCK > 0
