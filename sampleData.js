@@ -1802,7 +1802,7 @@ export const sampleOrders = [
   {
     offer: ["Laptop", "Smartphone"],
     quantity: 2,
-    status: "pending",
+    status: "shipped",
     additional_detail: "N/A",
     total_price: 1750,
     total_cost: 1400, 
