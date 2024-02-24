@@ -15,14 +15,14 @@ export async function viewAllOffers() {
         type: "input",
         name: "minPrice",
         message: "Enter minimum price",
-        validate: (value) => (!isNaN(value) ? true : "Please enter a number"),
+        validate: (value) => (!isNaN(value) ? true : "Please enter a number: "),
         default: 0,
       },
       {
         type: "input",
         name: "maxPrice",
         message: "Enter maximum price",
-        validate: (value) => (!isNaN(value) ? true : "Please enter a number"),
+        validate: (value) => (!isNaN(value) ? true : "Please enter a number: "),
         default: 2000,
       },
     ]);
@@ -116,7 +116,7 @@ export async function orderForProducts() {
         type: "list",
         name: "product",
         message: "Choose a product: ",
-        choices: [...allProducts.map((product) => product._id), "Exit"],
+        choices: [...allProducts.map((product) => product._id).sort(), "Exit"],
       },
     ]);
 
@@ -170,7 +170,7 @@ export async function orderForProducts() {
 export async function shipOrders() {
   try {
     const getPendingOrderChoices = async () => {
-      const allOrders = await SalesOrderModel.find({ status: "pending" });
+      const allOrders = await SalesOrderModel.find({ status: "pending" }).sort('-date');
       let choices = [];
       allOrders.forEach((order) => {
         if (order.offer && order.offer.length > 0) {
@@ -183,12 +183,12 @@ export async function shipOrders() {
 
     const shipOrder = async (orderOrOffer) => {
       const products = orderOrOffer.split(', ');
-    
+
       const orders = await SalesOrderModel.aggregate([
         { $unwind: "$offer" },
         { $match: { "offer": { $in: products }, "status": "pending" } }
       ]);
-    
+
       const orderToFetch = orders.length > 0 ? orders[0] : null;
 
       if (orderToFetch) {
@@ -209,8 +209,8 @@ export async function shipOrders() {
             console.log('Not enough stock to complete the order');
             return;
           }
-
-          console.log(`---------------------------------------------\nStock before sale for ${productName}: ${product.stock}`);
+          console.log(`\n--------------------------------------------- `)
+          console.log(`Stock before sale for ${productName}: ${product.stock}`);
           product.stock -= orderToFetch.quantity;
           console.log(`Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------\n`);
           await product.save();
@@ -221,7 +221,9 @@ export async function shipOrders() {
 
         if (products.length > 1 && orderToFetch.quantity >= 11) {
           totalPrice *= 0.9; 
-          console.log("---------------------------------------------\nA 10% discount has been applied to the order.\n---------------------------------------------");
+          console.log(`\n--------------------------------------------- `)
+          console.log("A 10% discount has been applied to the order.");
+          console.log(`Total Price after discount: $${totalPrice} \n---------------------------------------------`);
         }
 
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
