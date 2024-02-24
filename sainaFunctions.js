@@ -5,7 +5,7 @@ import {
   SalesOrderModel,
   ProductModel,
 } from "./models.js";
-import { sampleOffers } from "./sampleData.js";
+
 
 // menu option 5
 export async function viewAllOffers() {
