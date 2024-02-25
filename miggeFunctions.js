@@ -39,14 +39,14 @@ export const addNewCategory = async () => {
         console.log(`\nNew Category Details:\n
         Name: ${newCategory.name}
         Description: ${newCategory.description}
-        \n---------------------------------`);
+        \n---------------------------------------------`);
         console.log(
-          "You've inserted a new category successfully!\n---------------------------------"
+          "You've inserted a new category successfully!\n---------------------------------------------"
         );
         break;
       } else {
         console.log(
-          "-----------INVALID ENTRY-----------\nCategory already exists in the database\n---------------------------------"
+          "-----------INVALID ENTRY-----------\nCategory already exists in the database\n---------------------------------------------"
         );
       }
     }
@@ -57,6 +57,7 @@ export const addNewCategory = async () => {
 };
 
 // menu option 3
+
 export async function productsByCategory() {
   const allCategories = await CategoryModel.find({}, "name");
 
@@ -69,22 +70,22 @@ export async function productsByCategory() {
       message: "Select a category",
       choices:  [...categoryChoices, "Exit"]
     },
-
   ]);
 
   if (categoryAnswer.category === "Exit") {
     return;
   } 
 
+
   const products = await ProductModel.find({
     "category.name": categoryAnswer.category,
-    
   });
 
   if (!products.length) {
     console.log("No products found for this category");
     return;
   }
+
   console.log(`\n Here are the products for the category: ${categoryAnswer.category} \n`);
   
   products.forEach((product) => {
@@ -94,10 +95,12 @@ export async function productsByCategory() {
         Supplier: ${product.supplier.name}
         Category: ${product.category.name}
         Stock Quantity: ${product.stock}
-        \n---------------------------------`);
+        \n---------------------------------------------`);
+  });
 }
-  );
-}
+  
+
+
 
 // menu option 4
 export async function productsBySupplier() {
@@ -135,10 +138,10 @@ export async function productsBySupplier() {
         Supplier: ${product.supplier.name}
         Category: ${product.category.name}
         Stock Quantity: ${product.stock}
-        \n---------------------------------`);
+        \n---------------------------------------------`);
   });
   console.log(
-    "Product details have been displayed successfully!\n---------------------------------"
+    "Product details have been displayed successfully!\n---------------------------------------------"
   );
 }
 
@@ -151,10 +154,10 @@ export async function viewSuppliers() {
         Name: ${supplier.name}
         Contact Person: ${supplier.contact.name}
         Email: ${supplier.contact.email}
-        \n---------------------------------`);
+        \n---------------------------------------------`);
   });
 
   console.log(
-    "Supplier details have been displayed successfully!\n---------------------------------"
+    "Supplier details have been displayed successfully!\n---------------------------------------------"
   );
 }
