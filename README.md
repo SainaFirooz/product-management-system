@@ -1,5 +1,11 @@
-                                                                  Assignment 2
+                                                              Assignment 2
 
+                                                              npm init -y
+
+                                                              npm install mongoose
+
+                                                              npm install inquirer
+                                                     
 In this assignment you are going to develop a product management system.
 The data in the database is data about products. The user shall be able to create an offer to the
 market by putting together one or more products into a group. For example a laptop and a phone
