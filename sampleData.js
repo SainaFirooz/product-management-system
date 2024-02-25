@@ -1858,6 +1858,18 @@ export const sampleOrders = [
     },
   },
   {
+    offer: ["Laptop", "Smartphone"],
+    quantity: 11,
+    status: "pending",
+    additional_detail: "N/A",
+    total_price: 17820,
+    total_cost: 15400,
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
     offer: ["T-shirt"],
     quantity: 1,
     status: "pending",
