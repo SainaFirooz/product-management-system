@@ -32,11 +32,11 @@ export const addNewCategory = async () => {
           $match: { name: category_name },
         },
       ]);
+      newCategory.name = category_name;
+      newCategory.description = category_description;
       if (c_check.length <= 0 && newCategory.name && newCategory.description) {
-        newCategory.name = category_name;
-        newCategory.description = category_description;
         category_collection.insertOne(newCategory);
-        console.log("You´ve inserted a new category", newCategory);
+        console.log("You´ve inserted a new category");
         break;
       } else {
         console.log(
