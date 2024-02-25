@@ -1795,13 +1795,13 @@ export const sampleOffers = [
     category: ["Electronics", "Miscellaneous"],
   },
   {
-    product: ["Vacuum Cleaner", "Graphics Tablet", "Smart Sunscreen"],
+    products: ["Vacuum Cleaner", "Graphics Tablet", "Smart Sunscreen"],
     price: 315,
     active: true,
     category: ["Home Appliances", "Electronics", "Beauty & Personal Care"]
   },
   {
-    product: ["Automatic Hiking Backpack", "Smart Sunscreen"],
+    products: ["Automatic Hiking Backpack", "Smart Sunscreen"],
     price: 115,
     active: true,
     category: ["Sports & Outdoors", "Beauty & Personal Care"]
