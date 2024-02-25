@@ -1733,6 +1733,40 @@ export const sampleProducts = [
       },
     },
   },
+  {
+    name: "Automatic Hiking Backpack",
+    category: {
+      name: "Sports & Outdoors",
+      description: "Outdoor Gear Carrier",
+    },
+    price: 100,
+    cost: 800,
+    stock: 0,
+    supplier: {
+      name: "Carlos Sports and Hiking Co.",
+      contact: {
+        name: "Carlos Di Amenni",
+        email: "carlos78@sportsandhiking.com",
+      },
+    },
+  },
+  {
+    name: "Smart Sunscreen",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Protective, SPF, moisturizing",
+    },
+    price: 17,
+    cost: 10,
+    stock: 0,
+    supplier: {
+      name: "Fashion Supplier Co.",
+      contact: {
+        name: "Jane Smith",
+        email: "jane@fashionsupplier.com",
+      },
+    },
+  }
 ];
 
 export const sampleOffers = [
@@ -1760,6 +1794,18 @@ export const sampleOffers = [
     active: true,
     category: ["Electronics", "Miscellaneous"],
   },
+  {
+    product: ["Vacuum Cleaner", "Graphics Tablet", "Smart Sunscreen"],
+    price: 315,
+    active: true,
+    category: ["Home Appliances", "Electronics", "Beauty & Personal Care"]
+  },
+  {
+    product: ["Automatic Hiking Backpack", "Smart Sunscreen"],
+    price: 115,
+    active: true,
+    category: ["Sports & Outdoors", "Beauty & Personal Care"]
+  }
 ];
 export const sampleSuppliers = [
   {
@@ -1846,7 +1892,7 @@ export const sampleOrders = [
       type: Date,
       default: Date.now,
     },
-  },
+  }
 ];
 
 export const sampleCategories = [
