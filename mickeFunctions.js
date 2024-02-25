@@ -52,7 +52,6 @@ const contructProduct = async (newSupplier) => {
     },
   ]);
   let suppliersList = allSuppliers.map((supplier) => supplier._id);
-  console.log("NEW SUPPLIER:", newSupplier);
   if (!newSupplier) {
     console.log("current supplier chosen");
   }
@@ -71,7 +70,7 @@ const contructProduct = async (newSupplier) => {
     supplier_choice = newSupplier;
   }
 
-  console.log("SUPPLIER CHOICE: ", supplier_choice);
+  // console.log("SUPPLIER CHOICE:  ", supplier_choice);
   const supplier_productList = await ProductModel.aggregate([
     {
       $match: { "supplier.name": supplier_choice },
@@ -83,12 +82,6 @@ const contructProduct = async (newSupplier) => {
       },
     },
   ]);
-  console.log(supplier_productList);
-  console.log(`Products from ${supplier_choice}`);
-  supplier_productList.forEach((product) => {
-    console.log(product.name);
-  });
-
   const currentSupplier = newSupplier
     ? newSupplier
     : await SupplierModel.aggregate([
@@ -171,10 +164,9 @@ const contructProduct = async (newSupplier) => {
               },
             ]);
             newProduct[key] = categoryInfo[0];
-            console.log("ADDED CATEGORY:\n-------------------");
-            console.log("Name: ", newProduct[key].name);
-            console.log("Description: ", newProduct[key].description);
-            console.log("-------------------");
+            console.log(
+              `ADDED CATEGORY:\n---------------------------------------------\nName: ${newProduct[key].name}\nDescription: ${newProduct[key].description}\n---------------------------------------------`
+            );
 
             break;
           }
@@ -186,15 +178,16 @@ const contructProduct = async (newSupplier) => {
       }
     }
   }
+
   console.log(
-    `-----PRODUCT READY TO INSERT-----\n
-  Name: ${newProduct.name}\n
-  Category: ${newProduct.category.name}\n
-  Price: ${newProduct.price}\n
-  Cost: ${newProduct.cost}\n
-  Stock Quantity: ${newProduct.stock}\n
-  Supplier: ${newProduct.supplier.name}\n
-  -----------------------------------`
+    `\n----------PRODUCT READY TO INSERT----------\n
+  Name: ${newProduct.name}
+  Category: ${newProduct.category.name}
+  Price: ${newProduct.price}
+  Cost: ${newProduct.cost}
+  Stock Quantity: ${newProduct.stock}
+  Supplier: ${newProduct.supplier.name}
+  ---------------------------------------------\n`
   );
   const { decision } = await inquirer.prompt([
     {
@@ -206,11 +199,15 @@ const contructProduct = async (newSupplier) => {
   ]);
   if (decision) {
     await product_collection.insertOne(newProduct);
+    console.log("\n---------------------------------------------\nProduct inserted successfully.\n---------------------------------------------");
   } else {
-    console.log("Insertion cancelled.\n -------------------------");
+    console.log("\n---------------------------------------------\nInsertion cancelled.\n----------------------------------------------");
     return;
   }
 };
+
+
+
 export const orderForOffers = async () => {
   try {
     let currentOffers = await OfferModel.find({});
@@ -264,7 +261,7 @@ export const orderForOffers = async () => {
       console.log(`Quantity: ${newSalesOrder.quantity}`);
       console.log(`Status: ${newSalesOrder.status}`);
       console.log(
-        `Additional details:\n    ${newSalesOrder.additional_detail}\n-----------------------`
+        `Additional details:\n    ${newSalesOrder.additional_detail}\n---------------------------------------------`
       );
 
       const { insert_decision } = await inquirer.prompt([
