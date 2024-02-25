@@ -1,4 +1,4 @@
-                                                  Assignment 2
+                                                                  Assignment 2
 
 In this assignment you are going to develop a product management system.
 The data in the database is data about products. The user shall be able to create an offer to the
