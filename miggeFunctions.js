@@ -46,9 +46,8 @@ export const addNewCategory = async () => {
         break;
       } else {
         console.log(
-          "-----------INVALID ENTRY-----------\nCategory already exists in the database\n---------------------------------"
+          "-----------INVALID ENTRY-----------\nCategory already exists in the database\n---------------------------------------------"
         );
-        break;
       }
     }
     return newCategory;
