@@ -179,7 +179,7 @@ const contructProduct = async (newSupplier) => {
   }
 
   console.log(
-    `\n----------PRODUCT READY TO INSERT----------\n
+    `\n--------PRODUCT READY TO INSERT--------\n
   Name: ${newProduct.name}
   Category: ${newProduct.category.name}
   Price: ${newProduct.price}
