@@ -35,7 +35,9 @@ export async function viewAllOffers() {
     ]);
 
     if (filteredOffers.length === 0) {
-      console.log(" \n---------------------------------------------\n No offers found within this price range.\n---------------------------------------------\n");
+      console.log(
+        " \n---------------------------------------------\n No offers found within this price range.\n---------------------------------------------\n"
+      );
       return;
     }
 
@@ -50,9 +52,9 @@ export async function viewAllOffers() {
             Active: ${offer.active ? "Yes" : "No"}
             \n---------------------------------------------`);
     });
-    
+
     console.log(
-      "Offer details have been displayed successfully!\n---------------------------------"
+      "Offer details have been displayed successfully!\n---------------------------------------------"
     );
   } catch (error) {
     console.log(error);
@@ -89,23 +91,26 @@ export async function specificCategory() {
       });
 
       if (offersContainingCategory.length === 0) {
-        console.log(`No offers found for category: ${category}`);
+        console.log(
+          `---------------------------------------------\nNo offers found for category: ${category}\n---------------------------------------------\n`
+        );
         continue;
       }
 
       console.log(
-        `---------------------------------------------\nOffers for category: ${category}\n`
+        `---------------------------------------------\nOffers for category: ${category}\n---------------------------------------------\n`
       );
 
       offersContainingCategory.forEach((offer, index) => {
-        console.log(
-          `Offer ${index + 1}:\nPrice: $${offer.price} \nActive: ${
-            offer.active ? "Yes" : "No"
-          }\nIncluded Products: ${offer.products.join(
-            ", "
-          )}\n---------------------------------------------`
-        );
+        console.log(`\nOffer ${index + 1}:\n
+            Price: $${offer.price}
+            Active: ${offer.active ? "Yes" : "No"}
+            Included Products: ${offer.products.join(", ")}
+            \n---------------------------------------------`);
       });
+      console.log(
+        "Offer details have been displayed successfully!\n---------------------------------------------"
+      );
     } catch (error) {
       console.log(error);
     }
@@ -163,11 +168,13 @@ export async function orderForProducts() {
       });
 
       await newOrder.save();
-      console.log(`---------------------------------------------\nOrder for ${newOrder.offer} has been created with the following details:
+      console.log(`\nOrder for ${newOrder.offer} has been created with the following details:\
+      \n---------------------------------------------\n
       Quantity: ${newOrder.quantity}
       Status: ${newOrder.status}
       Additional Detail: ${newOrder.additional_detail}
-      Order ID: ${newOrder._id}\n---------------------------------------------`);
+      Order ID: ${newOrder._id}
+      \n---------------------------------------------`);
     }
   } catch (error) {
     console.log(error);
@@ -222,12 +229,11 @@ export async function shipOrders() {
             console.log("Not enough stock to complete the order");
             return;
           }
-          console.log(`\n--------------------------------------------- `);
+          console.log(`\n---------------------------------------------`);
           console.log(`Stock before sale for ${productName}: ${product.stock}`);
           product.stock -= orderToFetch.quantity;
-          console.log(
-            `Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------\n`
-          );
+          console.log(`Stock after sale for ${productName}: ${product.stock}`);
+          console.log(`---------------------------------------------`);
           await product.save();
 
           totalPrice += product.price * orderToFetch.quantity;
