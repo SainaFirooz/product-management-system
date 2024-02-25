@@ -254,7 +254,7 @@ export const orderForOffers = async () => {
         additional_detail: FINAL_details,
       });
 
-      console.log("-----NEW ORDER READY-----");
+      console.log("\n---------------NEW ORDER READY---------------");
       console.log(`Products: ${newSalesOrder.offer.join(", ")}`);
       console.log(`Quantity: ${newSalesOrder.quantity}`);
       console.log(`Status: ${newSalesOrder.status}`);
@@ -320,9 +320,12 @@ export const addNewSupplier = async () => {
     ]);
     if (insert_decision === "y") {
       await supplier_collection.insertOne(newSupplier);
+      console.log(
+        `---------------NEW SUPPLIER ADDED---------------\nName: ${newSupplier.name}\nContact Name: ${newSupplier.contact.name}\nContact Email: ${newSupplier.contact.email}\n---------------------------------------------`
+      );
       return newSupplier;
     } else {
-      console.log("Operation cancelled. \n---------------------");
+      console.log("Operation cancelled. \n---------------------------------------------");
       return;
     }
   } catch (error) {
