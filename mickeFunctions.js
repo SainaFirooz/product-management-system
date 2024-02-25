@@ -490,9 +490,9 @@ export const productsInStock = async () => {
       if (stockLength === o[o_index].products.length) {
         offers_by_stock.fullStock.push(o[o_index]);
       } else if (stockLength > 0) {
-        offers_by_stock.partialStock.push(o[o_index].products.length);
+        offers_by_stock.partialStock.push(o[o_index]);
       } else {
-        offers_by_stock.notInStock.push(o[o_index].products.length);
+        offers_by_stock.notInStock.push(o[o_index]);
       }
     }
     while (true) {
@@ -532,6 +532,7 @@ export const productsInStock = async () => {
   }
 };
 const stockMessage = (stockStatus) => {
+  console.log("STOCKSTATUS:", stockStatus);
   stockStatus.forEach((offer, index) => {
     console.log(
       `Offer 1${index}\nProducts: ${offer.products.join(" ")}\nPrice: $${
