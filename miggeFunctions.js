@@ -97,6 +97,10 @@ export async function productsByCategory() {
         Stock Quantity: ${product.stock}
         \n---------------------------------------------`);
   });
+
+  console.log(
+    "Product details have been displayed successfully!\n---------------------------------------------"
+  );
 }
   
 
