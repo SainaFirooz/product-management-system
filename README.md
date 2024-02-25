@@ -1,10 +1,10 @@
 
 
-                                                              npm init -y
+                                                  npm init -y
 
-                                                              npm install mongoose
+                                              npm install mongoose
 
-                                                              npm install inquirer
+                                               npm install inquirer
                                                      
 In this assignment you are going to develop a product management system.
 The data in the database is data about products. The user shall be able to create an offer to the
