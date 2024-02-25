@@ -26,3 +26,5 @@ await productModel_collection.insertMany(sampleProducts);
 await offerModel_collection.insertMany(sampleOffers);
 await supplierModel_collection.insertMany(sampleSuppliers);
 await categoryModel_collection.insertMany(sampleCategories);
+
+console.log("Database created! Exit and start main.js!");

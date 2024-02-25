@@ -19,7 +19,7 @@ export const addNewCategory = async () => {
         {
           type: "input",
           name: "category_name",
-          message: "Enter new category",
+          message: "Enter new category name",
         },
         {
           type: "input",
@@ -32,9 +32,9 @@ export const addNewCategory = async () => {
           $match: { name: category_name },
         },
       ]);
-      if (c_check.length <= 0) {
-        newCategory.name = category_name;
-        newCategory.description = category_description;
+      newCategory.name = category_name;
+      newCategory.description = category_description;
+      if (c_check.length <= 0 && newCategory.name && newCategory.description) {
         category_collection.insertOne(newCategory);
         console.log(`\nNew Category Details:\n
         Name: ${newCategory.name}
@@ -46,8 +46,9 @@ export const addNewCategory = async () => {
         break;
       } else {
         console.log(
-          "-----------INVALID ENTRY-----------\nCategory already exists in the database\n---------------------------------------------"
+          "-----------INVALID ENTRY-----------\nCategory already exists in the database\n---------------------------------"
         );
+        break;
       }
     }
     return newCategory;

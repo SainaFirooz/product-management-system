@@ -52,9 +52,6 @@ const contructProduct = async (newSupplier) => {
     },
   ]);
   let suppliersList = allSuppliers.map((supplier) => supplier._id);
-  if (!newSupplier) {
-    console.log("current supplier chosen");
-  }
   let supplier_choice = null;
   if (!newSupplier) {
     const { supplier_prompt } = await inquirer.prompt([
@@ -69,8 +66,6 @@ const contructProduct = async (newSupplier) => {
   } else {
     supplier_choice = newSupplier;
   }
-
-  // console.log("SUPPLIER CHOICE:  ", supplier_choice);
   const supplier_productList = await ProductModel.aggregate([
     {
       $match: { "supplier.name": supplier_choice },
@@ -113,7 +108,7 @@ const contructProduct = async (newSupplier) => {
             name: "choice",
             message: `Enter product ${key}`,
             validate: (value) =>
-              isNaN(value) ? true : "Dont use only numbers",
+              isNaN(value) ? true : "Dont use only numbers or leave it empty",
           },
         ]);
         newProduct[key] = await choice;
@@ -127,7 +122,11 @@ const contructProduct = async (newSupplier) => {
             validate: (value) => (!isNaN(value) ? true : "Use numbers"),
           },
         ]);
-        if (key === "cost") {
+        if (key === "cost" && choice >= newProduct.price) {
+          console.log(
+            "---------OPERATION ABORTED---------\nINVALID ENTRY: Cost cannot exceed pricing. \n-----------------------------------"
+          );
+          return;
         }
         newProduct[key] = await choice;
       }
@@ -224,7 +223,6 @@ export const orderForOffers = async () => {
     ]);
     if (offer_choice != "Exit") {
       const FINAL_offer = offer_choice.slice(3);
-      console.log(FINAL_offer);
       const { FINAL_quantity } = await inquirer.prompt({
         type: "input",
         name: "FINAL_quantity",
@@ -379,7 +377,6 @@ export const sumOfAllProfits = async () => {
               },
             },
           ]);
-          console.log("ALL SALES: ", allSales[0]);
           console.log(
             `------------------------------\nno. Sales: ${allSales[0].sales}\nTotal profit: ${allSales[0].totalProfit}\n------------------------------`
           );
@@ -497,9 +494,9 @@ export const productsInStock = async () => {
       if (stockLength === o[o_index].products.length) {
         offers_by_stock.fullStock.push(o[o_index]);
       } else if (stockLength > 0) {
-        offers_by_stock.partialStock.push(o[o_index].products.length);
+        offers_by_stock.partialStock.push(o[o_index]);
       } else {
-        offers_by_stock.notInStock.push(o[o_index].products.length);
+        offers_by_stock.notInStock.push(o[o_index]);
       }
     }
     while (true) {
@@ -539,6 +536,7 @@ export const productsInStock = async () => {
   }
 };
 const stockMessage = (stockStatus) => {
+  console.log("STOCKSTATUS:", stockStatus);
   stockStatus.forEach((offer, index) => {
     console.log(
       `Offer 1${index}\nProducts: ${offer.products.join(" ")}\nPrice: $${
