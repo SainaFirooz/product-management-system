@@ -52,7 +52,7 @@ const SalesOrdersSchema = mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
-  }
+  },
 });
 
 export const CategoryModel = mongoose.model("Category", CategorySchema);

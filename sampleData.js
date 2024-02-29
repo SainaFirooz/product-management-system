@@ -1003,7 +1003,7 @@ export const sampleProducts = [
     },
   },
   {
-    name: "Air Fryer",
+    name: " ",
     category: {
       name: "Home Appliances",
       description: "Cooking Appliance",
@@ -1733,6 +1733,40 @@ export const sampleProducts = [
       },
     },
   },
+  {
+    name: "Automatic Hiking Backpack",
+    category: {
+      name: "Sports & Outdoors",
+      description: "Outdoor Gear Carrier",
+    },
+    price: 100,
+    cost: 800,
+    stock: 0,
+    supplier: {
+      name: "Carlos Sports and Hiking Co.",
+      contact: {
+        name: "Carlos Di Amenni",
+        email: "carlos78@sportsandhiking.com",
+      },
+    },
+  },
+  {
+    name: "Smart Sunscreen",
+    category: {
+      name: "Beauty & Personal Care",
+      description: "Protective, SPF, moisturizing",
+    },
+    price: 17,
+    cost: 10,
+    stock: 0,
+    supplier: {
+      name: "Fashion Supplier Co.",
+      contact: {
+        name: "Jane Smith",
+        email: "jane@fashionsupplier.com",
+      },
+    },
+  }
 ];
 
 export const sampleOffers = [
@@ -1760,6 +1794,18 @@ export const sampleOffers = [
     active: true,
     category: ["Electronics", "Miscellaneous"],
   },
+  {
+    products: ["Vacuum Cleaner", "Graphics Tablet", "Smart Sunscreen"],
+    price: 315,
+    active: true,
+    category: ["Home Appliances", "Electronics", "Beauty & Personal Care"]
+  },
+  {
+    products: ["Automatic Hiking Backpack", "Smart Sunscreen"],
+    price: 115,
+    active: true,
+    category: ["Sports & Outdoors", "Beauty & Personal Care"]
+  }
 ];
 export const sampleSuppliers = [
   {
@@ -1802,17 +1848,29 @@ export const sampleOrders = [
   {
     offer: ["Laptop", "Smartphone"],
     quantity: 2,
-    status: "pending",
+    status: "shipped",
     additional_detail: "N/A",
     total_price: 1750,
-    total_cost: 1400, 
+    total_cost: 1400,
     date: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
-    offer:["T-shirt"],
+    offer: ["Laptop", "Smartphone"],
+    quantity: 11,
+    status: "pending",
+    additional_detail: "N/A",
+    total_price: 17820,
+    total_cost: 15400,
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    offer: ["T-shirt"],
     quantity: 1,
     status: "pending",
     additional_detail: "N/A",
@@ -1820,8 +1878,8 @@ export const sampleOrders = [
     total_cost: 10,
     date: {
       type: "date",
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
     offer: ["Refrigerator", "Shampoo", "Soccer Ball"],
@@ -1832,8 +1890,8 @@ export const sampleOrders = [
     total_cost: 1025,
     date: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
     offer: ["Smartwatch", "Smart Wireless Earbuds", "Jeans"],
@@ -1844,8 +1902,8 @@ export const sampleOrders = [
     total_cost: 245,
     date: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   }
 ];
 

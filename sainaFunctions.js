@@ -5,7 +5,6 @@ import {
   SalesOrderModel,
   ProductModel,
 } from "./models.js";
-import { sampleOffers } from "./sampleData.js";
 
 // menu option 5
 export async function viewAllOffers() {
@@ -15,14 +14,14 @@ export async function viewAllOffers() {
         type: "input",
         name: "minPrice",
         message: "Enter minimum price",
-        validate: (value) => (!isNaN(value) ? true : "Please enter a number"),
+        validate: (value) => (!isNaN(value) ? true : "Please enter a number: "),
         default: 0,
       },
       {
         type: "input",
         name: "maxPrice",
         message: "Enter maximum price",
-        validate: (value) => (!isNaN(value) ? true : "Please enter a number"),
+        validate: (value) => (!isNaN(value) ? true : "Please enter a number: "),
         default: 2000,
       },
     ]);
@@ -34,19 +33,29 @@ export async function viewAllOffers() {
         },
       },
     ]);
-    console.log('---------------------------------------------\nAll offers within a price range:\n');
+
+    if (filteredOffers.length === 0) {
+      console.log(
+        " \n---------------------------------------------\n No offers found within this price range.\n---------------------------------------------\n"
+      );
+      return;
+    }
+
+    console.log(
+      "---------------------------------------------\nAll offers within a price range:\n"
+    );
 
     filteredOffers.forEach((offer, index) => {
-      console.log(
-        `Offer ${
-          index + 1
-        }:\nProducts: ${offer.products.join(", ")}\nPrice: $${
-          offer.price
-        }\nActive: ${
-          offer.active ? "Yes" : "No"
-        }\n---------------------------------------------`
-      );
+      console.log(`\nOffer ${index + 1}:\n
+            Products: ${offer.products.join(", ")}
+            Price: $${offer.price}
+            Active: ${offer.active ? "Yes" : "No"}
+            \n---------------------------------------------`);
     });
+
+    console.log(
+      "Offer details have been displayed successfully!\n---------------------------------------------"
+    );
   } catch (error) {
     console.log(error);
   }
@@ -55,49 +64,58 @@ export async function viewAllOffers() {
 // menu option 6
 
 export async function specificCategory() {
-  try {
-    const allCategories = await ProductModel.aggregate([
-      { $group: { _id: "$category.name" } },
-    ]);
+  let category = "";
+  while (category !== "Exit") {
+    try {
+      const allCategories = await ProductModel.aggregate([
+        { $group: { _id: "$category.name" } },
+      ]);
 
-    const { category } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "category",
-        message: "Choose a category",
-        choices: allCategories.map((category) => category._id).concat("Exit"),
-      },
-    ]);
+      const response = await inquirer.prompt([
+        {
+          type: "list",
+          name: "category",
+          message: "Choose a category",
+          choices: allCategories.map((category) => category._id).concat("Exit"),
+        },
+      ]);
 
-    if (category === "Exit") {
-      return;
-    }
+      category = response.category;
 
-    const offersContainingCategory = await OfferModel.find({
-      category: { $in: [category] },
-    });
+      if (category === "Exit") {
+        return;
+      }
 
-    if (offersContainingCategory.length === 0) {
-      console.log(`No offers found for category: ${category}`);
-      return;
-    }
+      const offersContainingCategory = await OfferModel.find({
+        category: { $in: [category] },
+      });
 
-    console.log(`---------------------------------------------\nOffers for category: ${category}\n`);
+      if (offersContainingCategory.length === 0) {
+        console.log(
+          `---------------------------------------------\nNo offers found for category: ${category}\n---------------------------------------------\n`
+        );
+        continue;
+      }
 
-    offersContainingCategory.forEach((offer, index) => {
       console.log(
-        `Offer ${index + 1}:\nPrice: $${offer.price} \nActive: ${
-          offer.active ? "Yes" : "No"
-        }\nIncluded Products: ${offer.products.join(
-          ", "
-        )}\n---------------------------------------------`
+        `---------------------------------------------\nOffers for category: ${category}\n---------------------------------------------\n`
       );
-    });
-  } catch (error) {
-    console.log(error);
+
+      offersContainingCategory.forEach((offer, index) => {
+        console.log(`\nOffer ${index + 1}:\n
+            Price: $${offer.price}
+            Active: ${offer.active ? "Yes" : "No"}
+            Included Products: ${offer.products.join(", ")}
+            \n---------------------------------------------`);
+      });
+      console.log(
+        "Offer details have been displayed successfully!\n---------------------------------------------"
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
-
 // menu option 8
 export async function orderForProducts() {
   try {
@@ -112,7 +130,7 @@ export async function orderForProducts() {
         type: "list",
         name: "product",
         message: "Choose a product: ",
-        choices: [...allProducts.map((product) => product._id), "Exit"],
+        choices: [...allProducts.map((product) => product._id).sort(), "Exit"],
       },
     ]);
 
@@ -150,11 +168,13 @@ export async function orderForProducts() {
       });
 
       await newOrder.save();
-      console.log(`---------------------------------------------\nOrder for ${newOrder.offer} has been created with the following details:
+      console.log(`\nOrder for ${newOrder.offer} has been created with the following details:\
+      \n---------------------------------------------\n
       Quantity: ${newOrder.quantity}
       Status: ${newOrder.status}
       Additional Detail: ${newOrder.additional_detail}
-      Order ID: ${newOrder._id}\n---------------------------------------------`);
+      Order ID: ${newOrder._id}
+      \n---------------------------------------------`);
     }
   } catch (error) {
     console.log(error);
@@ -166,11 +186,13 @@ export async function orderForProducts() {
 export async function shipOrders() {
   try {
     const getPendingOrderChoices = async () => {
-      const allOrders = await SalesOrderModel.find({ status: "pending" });
+      const allOrders = await SalesOrderModel.find({ status: "pending" }).sort(
+        "-date"
+      );
       let choices = [];
       allOrders.forEach((order) => {
         if (order.offer && order.offer.length > 0) {
-          choices.push(order.offer.join(', '));
+          choices.push(order.offer.join(", "));
         }
       });
       choices.push("Exit");
@@ -178,23 +200,25 @@ export async function shipOrders() {
     };
 
     const shipOrder = async (orderOrOffer) => {
-      const products = orderOrOffer.split(', ');
-    
+      const products = orderOrOffer.split(", ");
+
       const orders = await SalesOrderModel.aggregate([
         { $unwind: "$offer" },
-        { $match: { "offer": { $in: products }, "status": "pending" } }
+        { $match: { offer: { $in: products }, status: "pending" } },
       ]);
-    
+
       const orderToFetch = orders.length > 0 ? orders[0] : null;
 
       if (orderToFetch) {
-        const products = orderOrOffer.split(', ');
+        const products = orderOrOffer.split(", ");
 
         let totalPrice = 0;
         let totalCost = 0;
 
         for (const productName of products) {
-          let product = await ProductModel.findOne({ name: productName.trim() });
+          let product = await ProductModel.findOne({
+            name: productName.trim(),
+          });
 
           if (!product) {
             console.log(`Product ${productName} not found`);
@@ -202,13 +226,14 @@ export async function shipOrders() {
           }
 
           if (product.stock < orderToFetch.quantity) {
-            console.log('Not enough stock to complete the order');
+            console.log("Not enough stock to complete the order");
             return;
           }
-
-          console.log(`\n---------------------------------------------\nStock before sale for ${productName}: ${product.stock}`);
+          console.log(`\n---------------------------------------------`);
+          console.log(`Stock before sale for ${productName}: ${product.stock}`);
           product.stock -= orderToFetch.quantity;
-          console.log(`Stock after sale for ${productName}: ${product.stock}\n---------------------------------------------`);
+          console.log(`Stock after sale for ${productName}: ${product.stock}`);
+          console.log(`---------------------------------------------`);
           await product.save();
 
           totalPrice += product.price * orderToFetch.quantity;
@@ -216,24 +241,28 @@ export async function shipOrders() {
         }
 
         if (products.length > 1 && orderToFetch.quantity >= 11) {
-          totalPrice *= 0.9; 
-          console.log("\nA 10% discount has been applied to your order.\n---------------------------------------------");
+          totalPrice *= 0.9;
+          console.log(`\n--------------------------------------------- `);
+          console.log("A 10% discount has been applied to the order.");
+          console.log(
+            `Total Price after discount: $${totalPrice} \n---------------------------------------------`
+          );
         }
 
         const orderToShip = await SalesOrderModel.findOneAndUpdate(
           { _id: orderToFetch._id },
-          { 
-            status: "shipped", 
-            total_price: totalPrice, 
+          {
+            status: "shipped",
+            total_price: totalPrice,
             total_cost: totalCost,
-            date: new Date() 
+            date: new Date(),
           },
           { new: true }
         ).exec();
 
         console.log(`\nUpdated Order Details:\n
         ID: ${orderToShip._id}
-        Order: ${orderToShip.offer.join(', ')}
+        Order: ${orderToShip.offer.join(", ")}
         Quantity: ${orderToShip.quantity}
         Status: ${orderToShip.status} (updated)
         Additional Details: ${orderToShip.additional_detail}
@@ -282,10 +311,10 @@ export async function viewAllSales() {
     if (allSales.length === 0) {
       console.log("No sales found");
       return;
-    } else {  
+    } else {
       allSales.forEach((sale, index) => {
         console.log(`Sale ${index + 1}:\n
-        Order: ${sale.offer.join(', ')}
+        Order: ${sale.offer.join(", ")}
         Quantity: ${sale.quantity}
         Status: ${sale.status}
         Additional Details: ${sale.additional_detail}
